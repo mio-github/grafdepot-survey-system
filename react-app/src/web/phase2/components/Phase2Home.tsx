@@ -177,18 +177,6 @@ export default function Phase2Home() {
         '報告書ステータス管理',
       ],
     },
-    {
-      to: '/web/phase2/editor',
-      icon: <Workflow size={36} />,
-      color: '#4CAF50',
-      title: '作業分担',
-      description: 'チームメンバー間で報告書作成タスクを分担し、効率的に作業を進めます。',
-      items: [
-        'タスク割り当て',
-        '進捗状況の共有',
-        'メンバー管理',
-      ],
-    },
   ]
 
   return (
