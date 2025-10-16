@@ -405,7 +405,6 @@ const CloseButton = styled.button`
 
 export default function AdvancedReportEditor() {
   const navigate = useNavigate()
-  const [showAI, setShowAI] = useState(false)
   const [report, setReport] = useState({
     summary: '兵庫県相生市山手2丁目73の担保物件について、現地調査を実施しました。',
     findings: '物件は住宅地に位置し、周辺環境は良好です。建物の外観に軽微な劣化が見られますが、構造上の問題はありません。',
@@ -414,35 +413,27 @@ export default function AdvancedReportEditor() {
 
   const tools = [
     {
-      icon: <Wand2 size={20} />,
-      color: '#FF9800',
-      title: 'AI文章生成',
-      desc: '写真と位置情報から報告文を自動生成',
-      action: () => setShowAI(true),
-    },
-    {
       icon: <MapPin size={20} />,
-      color: '#2196F3',
-      title: '自動配置',
-      desc: 'GPS情報で写真を地図に自動配置',
-      action: () => alert('GPS情報に基づいて写真を自動配置しました'),
+      color: '#005BAC',
+      title: '写真配置',
+      desc: 'GPS情報で写真を地図に配置',
+      action: () => alert('GPS情報に基づいて写真を配置しました'),
     },
     {
       icon: <Navigation size={20} />,
+      color: '#FF9800',
+      title: '視線矢印',
+      desc: '方位情報から視線矢印を作成',
+      action: () => alert('方位情報に基づいて視線矢印を生成しました'),
+    },
+    {
+      icon: <Users size={20} />,
       color: '#4CAF50',
-      title: '視線矢印自動生成',
-      desc: '方位情報から視線矢印を自動作成',
-      action: () => alert('方位情報に基づいて視線矢印を自動生成しました'),
+      title: '担当者設定',
+      desc: '作業を他のメンバーに割り当て',
+      action: () => alert('担当者を設定しました'),
     },
   ]
-
-  const handleAISuggest = () => {
-    setReport({
-      ...report,
-      summary: 'AI分析の結果、当該物件は良好な状態を維持していることが確認されました。前面道路の幅員は十分であり、アクセス性に問題はありません。',
-    })
-    alert('AI提案を適用しました')
-  }
 
   return (
     <Container>
@@ -514,14 +505,6 @@ export default function AdvancedReportEditor() {
             </ToolbarTitle>
           </ToolbarLeft>
           <ToolbarActions>
-            <AIButton
-              onClick={() => setShowAI(!showAI)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Bot size={16} />
-              AI支援
-            </AIButton>
             <SecondaryButton
               onClick={() => alert('PDF出力')}
               whileHover={{ scale: 1.05 }}
@@ -630,44 +613,6 @@ export default function AdvancedReportEditor() {
         </EditorArea>
       </MainContent>
 
-      <AnimatePresence>
-        {showAI && (
-          <AIPanel
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          >
-            <AIPanelHeader>
-              <AIPanelTitle>
-                <Bot size={20} />
-                AI報告書支援
-              </AIPanelTitle>
-              <CloseButton onClick={() => setShowAI(false)}>
-                ✕
-              </CloseButton>
-            </AIPanelHeader>
-            <AIPanelContent>
-              <AISuggestion>
-                <strong>AI提案：</strong><br />
-                写真解析の結果、建物外壁に軽微なひび割れが検出されました。構造上の問題ではありませんが、経過観察を推奨します。
-              </AISuggestion>
-              <AISuggestion>
-                <strong>改善案：</strong><br />
-                「調査概要」に前面道路の幅員情報（約6m）とアクセス性に関する記述を追加することを推奨します。
-              </AISuggestion>
-              <PrimaryButton
-                onClick={handleAISuggest}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                style={{ width: '100%', justifyContent: 'center' }}
-              >
-                <Wand2 size={16} />
-                AI提案を適用
-              </PrimaryButton>
-            </AIPanelContent>
-          </AIPanel>
-        )}
-      </AnimatePresence>
     </Container>
   )
 }

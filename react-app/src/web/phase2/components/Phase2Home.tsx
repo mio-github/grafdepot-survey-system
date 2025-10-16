@@ -138,9 +138,9 @@ const FeatureItem = styled.li`
   }
 `
 
-const ProBadge = styled.div`
+const VersionBadge = styled.div`
   display: inline-block;
-  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  background: #FF9800;
   color: white;
   padding: 4px 12px;
   border-radius: 6px;
@@ -154,39 +154,39 @@ export default function Phase2Home() {
 
   const features = [
     {
-      to: '/web/phase2/dashboard',
-      icon: <Bot size={36} />,
-      color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      title: 'AI画像解析',
-      description: 'AIが自動的に写真を解析し、ひび割れや劣化などの異常を検出します。',
-      items: [
-        '自動異常検出（ひび割れ、崖地、劣化）',
-        '信頼度スコア表示',
-        'リアルタイム解析結果',
-      ],
-    },
-    {
       to: '/web/phase2/editor',
       icon: <FileText size={36} />,
-      color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      title: '高度な報告書編集',
-      description: 'AI支援による報告書作成で、作業効率が大幅に向上します。',
+      color: '#005BAC',
+      title: '報告書編集',
+      description: '複数人で協力して報告書を作成。地図への写真配置や視線矢印の設定が可能です。',
       items: [
-        'AI文章生成・改善提案',
-        '写真自動配置（GPS連動）',
-        '視線矢印自動生成',
+        '写真配置（GPS連動）',
+        '視線矢印配置',
+        'リアルタイム保存',
       ],
     },
     {
       to: '/web/phase2/approval',
       icon: <Users size={36} />,
-      color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      color: '#FF9800',
       title: '承認フロー管理',
       description: 'グループでの報告書共有と、段階的な承認プロセスを管理します。',
       items: [
         '多段階承認フロー',
         'コメント・差し戻し機能',
         '報告書ステータス管理',
+      ],
+    },
+    {
+      to: '/web/phase2/editor',
+      icon: <Workflow size={36} />,
+      color: '#4CAF50',
+      title: '作業分担',
+      description: 'チームメンバー間で報告書作成タスクを分担し、効率的に作業を進めます。',
+      items: [
+        'タスク割り当て',
+        '進捗状況の共有',
+        'メンバー管理',
       ],
     },
   ]
@@ -204,11 +204,11 @@ export default function Phase2Home() {
         </Badge>
         <Title>
           <TrendingUp size={40} />
-          Web管理画面 Pro
-          <ProBadge>PRO</ProBadge>
+          Web管理画面
+          <VersionBadge>本稼働バージョン</VersionBadge>
         </Title>
         <Subtitle>
-          AI技術とグループワーク機能を活用した、プロフェッショナル向けの高度な報告書作成システム
+          複数人での作業分担と承認フローに対応した、本格的な報告書作成システム
         </Subtitle>
       </Header>
 
