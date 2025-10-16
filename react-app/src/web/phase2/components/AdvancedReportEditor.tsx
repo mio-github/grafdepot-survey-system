@@ -445,7 +445,7 @@ export default function AdvancedReportEditor() {
           </BackButton>
           <Badge>
             <Sparkles size={14} />
-            フェーズ2: 本稼働版
+            フェーズ2: チーム利用
           </Badge>
 
           <Title>報告書作成支援</Title>

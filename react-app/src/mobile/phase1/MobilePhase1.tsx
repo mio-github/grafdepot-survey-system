@@ -186,7 +186,7 @@ function MobilePhase1Home() {
               gap: '8px'
             }}>
               <BookOpen size={18} />
-              フェーズ1: シンプル版
+              フェーズ1: 単身利用
             </div>
 
             <FeatureGrid>
@@ -211,13 +211,14 @@ function MobilePhase1Home() {
             <div style={{
               marginTop: '2rem',
               padding: '1rem',
-              background: '#E8F5E9',
+              background: '#E3F2FD',
               borderRadius: '8px',
               fontSize: '0.875rem',
-              lineHeight: 1.6
+              lineHeight: 1.6,
+              border: '1px solid #90CAF9'
             }}>
-              <strong style={{ color: '#2E7D32' }}>単一ユーザー向け</strong><br/>
-              フェーズ1はシンプルに報告書作成に特化。グループ管理や承認フローはフェーズ2で実装します。
+              <strong style={{ color: '#005BAC' }}>フェーズ1の特徴：単身での利用</strong><br/>
+              個人での現地調査と報告書作成に最適化。シンプルで使いやすい機能に特化しています。
             </div>
           </Content>
         </Screen>

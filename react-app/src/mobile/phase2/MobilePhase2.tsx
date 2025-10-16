@@ -186,7 +186,7 @@ function MobilePhase2Home() {
               gap: '8px'
             }}>
               <Sparkles size={16} />
-              フェーズ2: 本稼働版
+              フェーズ2: チーム利用
             </div>
 
             <FeatureGrid>
@@ -217,8 +217,8 @@ function MobilePhase2Home() {
               lineHeight: 1.6,
               border: '1px solid #FFB74D'
             }}>
-              <strong style={{ color: '#E65100' }}>フェーズ2の特徴</strong><br/>
-              より予算をかけた高度な機能で、使いやすさと生産性が大幅に向上。特に報告書編集機能が強化されています。
+              <strong style={{ color: '#E65100' }}>フェーズ2の特徴：チームでの利用</strong><br/>
+              複数人での作業分担や承認フローに対応。チーム全体での効率的な報告書作成を実現します。
             </div>
           </Content>
         </Screen>

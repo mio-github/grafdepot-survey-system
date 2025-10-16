@@ -110,7 +110,7 @@ export default function HomePage() {
               <Smartphone size={32} />
             </IconWrapper>
             <CardTitle>スマホアプリ</CardTitle>
-            <Badge $color="#005BAC">フェーズ1: シンプル版</Badge>
+            <Badge $color="#005BAC">フェーズ1: 単身利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
               GPS・方位自動記録<br/>
               写真撮影・アップロード
@@ -122,7 +122,7 @@ export default function HomePage() {
               <Monitor size={32} />
             </IconWrapper>
             <CardTitle>Web管理画面</CardTitle>
-            <Badge $color="#005BAC">フェーズ1: シンプル版</Badge>
+            <Badge $color="#005BAC">フェーズ1: 単身利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
               地図自動プロット<br/>
               ドラッグ&ドロップ編集
@@ -134,7 +134,7 @@ export default function HomePage() {
               <Rocket size={32} />
             </IconWrapper>
             <CardTitle>スマホアプリ Pro</CardTitle>
-            <Badge $color="#FF9800">フェーズ2: 本稼働版</Badge>
+            <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
               AR撮影ガイド<br/>
               音声メモ・チェックリスト
@@ -146,9 +146,9 @@ export default function HomePage() {
               <TrendingUp size={32} />
             </IconWrapper>
             <CardTitle>Web管理画面 Pro</CardTitle>
-            <Badge $color="#FF9800">フェーズ2: 本稼働版</Badge>
+            <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
-              AI画像解析<br/>
+              複数人での報告書編集<br/>
               グループ管理・承認フロー
             </p>
           </NavCard>

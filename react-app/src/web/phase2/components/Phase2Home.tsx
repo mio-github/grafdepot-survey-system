@@ -188,7 +188,7 @@ export default function Phase2Home() {
         </BackButton>
         <Badge>
           <Sparkles size={16} />
-          フェーズ2: 本稼働版
+          フェーズ2: チーム利用
         </Badge>
         <Title>
           <TrendingUp size={40} />
@@ -196,7 +196,7 @@ export default function Phase2Home() {
           <VersionBadge>本稼働バージョン</VersionBadge>
         </Title>
         <Subtitle>
-          複数人での作業分担と承認フローに対応した、本格的な報告書作成システム
+          チームでの協働作業と承認フローに対応。複数人で効率的に報告書を作成できます
         </Subtitle>
       </Header>
 

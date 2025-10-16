@@ -758,7 +758,7 @@ export default function EnhancedMapEditor() {
           </BackButton>
           <Badge style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <BookOpen size={14} />
-            フェーズ1: シンプル版
+            フェーズ1: 単身利用
           </Badge>
 
           <ProjectInfo>
