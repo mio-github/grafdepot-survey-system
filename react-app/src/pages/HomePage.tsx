@@ -102,7 +102,6 @@ export default function HomePage() {
           <Building2 size={32} />
           グラフデポ 現地調査報告システム
         </Title>
-        <Subtitle>React版 - スタイリッシュ & インタラクティブ</Subtitle>
 
         <Grid>
           <NavCard to="/mobile/phase1">
