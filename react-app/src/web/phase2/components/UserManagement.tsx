@@ -72,60 +72,71 @@ const AddButton = styled(motion.button)`
   }
 `
 
-const UserGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
+const UserList = styled.div`
   max-width: 1400px;
 `
 
-const UserCard = styled(motion.div)`
+const UserListItem = styled(motion.div)`
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 1.5rem;
+  margin-bottom: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.2s;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
 `
 
-const UserHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-`
-
 const Avatar = styled.div`
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #005BAC 0%, #0277BD 100%);
+  background: #005BAC;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
+  flex-shrink: 0;
 `
 
 const UserInfo = styled.div`
   flex: 1;
+  min-width: 0;
 `
 
 const UserName = styled.h3`
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #212121;
   margin-bottom: 4px;
 `
 
+const UserDetails = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+`
+
+const DetailItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #616161;
+`
+
 const RoleBadge = styled.span<{ $role: string }>`
-  display: inline-block;
-  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -135,38 +146,20 @@ const RoleBadge = styled.span<{ $role: string }>`
     props.$role === 'editor' ? '#4CAF50' : '#2196F3'
   };
   color: white;
-`
-
-const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 1rem;
-  padding: 12px 0;
-  border-top: 1px solid #E0E0E0;
-`
-
-const ContactItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.875rem;
-  color: #616161;
+  flex-shrink: 0;
 `
 
 const Actions = styled.div`
   display: flex;
   gap: 8px;
-  padding-top: 12px;
-  border-top: 1px solid #E0E0E0;
+  flex-shrink: 0;
 `
 
 const ActionButton = styled(motion.button)<{ $color?: string }>`
-  flex: 1;
   background: ${props => props.$color || '#E0E0E0'};
   color: ${props => props.$color ? 'white' : '#616161'};
   border: none;
-  padding: 10px;
+  padding: 8px 16px;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 600;
@@ -338,38 +331,36 @@ export default function UserManagement() {
         </AddButton>
       </ActionBar>
 
-      <UserGrid>
+      <UserList>
         {users.map((user, index) => (
-          <UserCard
+          <UserListItem
             key={user.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
           >
-            <UserHeader>
-              <Avatar>{user.name.charAt(0)}</Avatar>
-              <UserInfo>
-                <UserName>{user.name}</UserName>
+            <Avatar>{user.name.charAt(0)}</Avatar>
+
+            <UserInfo>
+              <UserName>{user.name}</UserName>
+              <UserDetails>
                 <RoleBadge $role={user.role}>
                   {getRoleLabel(user.role)}
                 </RoleBadge>
-              </UserInfo>
-            </UserHeader>
-
-            <ContactInfo>
-              <ContactItem>
-                <Mail size={16} />
-                {user.email}
-              </ContactItem>
-              <ContactItem>
-                <Phone size={16} />
-                {user.phone}
-              </ContactItem>
-              <ContactItem>
-                <Shield size={16} />
-                作成報告書: {user.reports}件
-              </ContactItem>
-            </ContactInfo>
+                <DetailItem>
+                  <Mail size={14} />
+                  {user.email}
+                </DetailItem>
+                <DetailItem>
+                  <Phone size={14} />
+                  {user.phone}
+                </DetailItem>
+                <DetailItem>
+                  <Shield size={14} />
+                  報告書: {user.reports}件
+                </DetailItem>
+              </UserDetails>
+            </UserInfo>
 
             <Actions>
               <ActionButton
@@ -378,7 +369,7 @@ export default function UserManagement() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Edit2 size={16} />
+                <Edit2 size={14} />
                 編集
               </ActionButton>
               <ActionButton
@@ -387,13 +378,13 @@ export default function UserManagement() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
                 削除
               </ActionButton>
             </Actions>
-          </UserCard>
+          </UserListItem>
         ))}
-      </UserGrid>
+      </UserList>
     </Container>
   )
 }
