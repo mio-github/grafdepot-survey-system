@@ -133,7 +133,7 @@ export default function HomePage() {
             <IconWrapper $color="#FF9800">
               <Rocket size={32} />
             </IconWrapper>
-            <CardTitle>スマホアプリ Pro</CardTitle>
+            <CardTitle>スマホアプリ</CardTitle>
             <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
               AR撮影ガイド<br/>
@@ -145,7 +145,7 @@ export default function HomePage() {
             <IconWrapper $color="#FF9800">
               <TrendingUp size={32} />
             </IconWrapper>
-            <CardTitle>Web管理画面 Pro</CardTitle>
+            <CardTitle>Web管理画面</CardTitle>
             <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
               複数人での報告書編集<br/>
