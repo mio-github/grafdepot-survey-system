@@ -1,7 +1,8 @@
+import { useState } from 'react'
 import styled from 'styled-components'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Camera, Crosshair, Navigation, MapPin } from 'lucide-react'
+import { ArrowLeft, Camera, Crosshair, Navigation, MapPin, Eye, EyeOff } from 'lucide-react'
 
 const Container = styled.div`
   width: 100%;
@@ -152,7 +153,70 @@ const TeamBadge = styled.div`
   gap: 6px;
 `
 
+const ARMarker = styled(motion.div)<{ $x: number; $y: number }>`
+  position: absolute;
+  left: ${props => props.$x}%;
+  top: ${props => props.$y}%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(156, 39, 176, 0.2);
+  border: 3px solid #9C27B0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`
+
+const ARMarkerInner = styled(motion.div)`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #9C27B0;
+`
+
+const ARLabel = styled(motion.div)`
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  font-weight: 600;
+`
+
+const ARToggle = styled(motion.button)`
+  position: absolute;
+  top: 100px;
+  left: 16px;
+  background: rgba(156, 39, 176, 0.9);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(10px);
+`
+
 export default function CameraScreen() {
+  const [showAR, setShowAR] = useState(true)
+
+  const previousPhotos = [
+    { id: 1, label: '正面外観', x: 30, y: 40, time: '10:23' },
+    { id: 2, label: '側面', x: 65, y: 35, time: '10:25' },
+    { id: 3, label: '周辺環境', x: 50, y: 60, time: '10:28' },
+  ]
+
   const handleCapture = () => {
     alert('写真を撮影しました（チームメンバーと共有されます）')
   }
@@ -184,10 +248,52 @@ export default function CameraScreen() {
           </InfoCard>
         </InfoOverlay>
 
+        <ARToggle
+          onClick={() => setShowAR(!showAR)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {showAR ? <Eye size={16} /> : <EyeOff size={16} />}
+          AR {showAR ? 'ON' : 'OFF'}
+        </ARToggle>
+
         <TeamBadge>
           <Camera size={14} />
           チーム撮影
         </TeamBadge>
+
+        <AnimatePresence>
+          {showAR && previousPhotos.map((photo) => (
+            <ARMarker
+              key={photo.id}
+              $x={photo.x}
+              $y={photo.y}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ duration: 0.3, delay: photo.id * 0.1 }}
+            >
+              <ARMarkerInner
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [1, 0.5, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <ARLabel
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: photo.id * 0.1 + 0.2 }}
+              >
+                {photo.label} ({photo.time})
+              </ARLabel>
+            </ARMarker>
+          ))}
+        </AnimatePresence>
       </CameraView>
 
       <BottomControls>

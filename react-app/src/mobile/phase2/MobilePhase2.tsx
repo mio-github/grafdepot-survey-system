@@ -130,10 +130,10 @@ function MobilePhase2Home() {
   const features = [
     {
       icon: <Camera size={24} />,
-      title: '写真撮影',
-      desc: 'GPS・方位情報を自動記録',
+      title: '写真撮影（AR対応）',
+      desc: '過去の撮影位置をAR表示',
       action: () => navigate('/mobile/phase2/camera'),
-      badge: 'Phase1'
+      badge: 'Phase2'
     },
     {
       icon: <FileText size={24} />,
@@ -141,13 +141,6 @@ function MobilePhase2Home() {
       desc: 'リアルタイム共同編集',
       action: () => navigate('/mobile/phase2/editor'),
       badge: 'Phase1+'
-    },
-    {
-      icon: <Users size={24} />,
-      title: '承認フロー',
-      desc: '報告書の承認依頼・管理',
-      action: () => navigate('/mobile/phase2/approval'),
-      badge: 'Phase2'
     },
     {
       icon: <CheckSquare size={24} />,

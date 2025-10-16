@@ -147,6 +147,64 @@ const AIBadge = styled.div`
   gap: 4px;
 `
 
+const AIFeatureBox = styled.div`
+  background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 1.5rem;
+`
+
+const AIFeatureTitle = styled.div`
+  font-size: 1rem;
+  font-weight: 700;
+  color: #6A1B9A;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const AIFeatureList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`
+
+const AIFeatureItem = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.875rem;
+  color: #4A148C;
+`
+
+const AIFeatureIcon = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #9C27B0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+`
+
+const TimeLabel = styled.div`
+  background: #4CAF50;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+`
+
 const GenerateButton = styled(motion.button)`
   width: 100%;
   padding: 16px;
@@ -346,6 +404,40 @@ export default function AIReportGenerator() {
             <ImageIcon size={24} />
             撮影データ
           </PanelTitle>
+
+          <AIFeatureBox>
+            <AIFeatureTitle>
+              <Wand2 size={20} />
+              AI画像解析機能
+            </AIFeatureTitle>
+            <AIFeatureList>
+              <AIFeatureItem>
+                <AIFeatureIcon>✓</AIFeatureIcon>
+                <div>
+                  <strong>建物状態の自動判定</strong><br />
+                  外壁・屋根の劣化度を画像から自動評価
+                </div>
+              </AIFeatureItem>
+              <AIFeatureItem>
+                <AIFeatureIcon>✓</AIFeatureIcon>
+                <div>
+                  <strong>周辺環境の自動分析</strong><br />
+                  立地条件・日当たり・アクセスを総合評価
+                </div>
+              </AIFeatureItem>
+              <AIFeatureItem>
+                <AIFeatureIcon>✓</AIFeatureIcon>
+                <div>
+                  <strong>専門用語での自動文章生成</strong><br />
+                  不動産鑑定士レベルの報告書を自動作成
+                </div>
+              </AIFeatureItem>
+            </AIFeatureList>
+            <TimeLabel>
+              <CheckCircle size={14} />
+              作業時間を約80%削減
+            </TimeLabel>
+          </AIFeatureBox>
 
           <PhotoGrid>
             {photos.map((photo) => (
