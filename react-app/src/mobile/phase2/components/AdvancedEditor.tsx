@@ -317,7 +317,7 @@ export default function AdvancedEditor() {
   }, [title])
 
   const handleSave = () => {
-    alert('報告書を保存しました（フェーズ2: 高度な機能）')
+    alert('報告書を保存しました（フェーズ2: チーム編集機能）')
   }
 
   return (
@@ -331,7 +331,7 @@ export default function AdvancedEditor() {
           >
             <ArrowLeft size={24} />
           </BackButton>
-          <Title>高度なエディタ</Title>
+          <Title>チーム編集</Title>
           <ActionButtons>
             <IconButton
               $active={mode === 'preview'}
@@ -394,7 +394,7 @@ export default function AdvancedEditor() {
       <Content>
         <Badge style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Sparkles size={14} />
-          フェーズ2: 高度な編集機能
+          フェーズ2: チーム編集機能
         </Badge>
 
         <Section

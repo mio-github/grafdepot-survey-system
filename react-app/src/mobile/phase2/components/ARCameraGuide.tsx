@@ -285,7 +285,7 @@ export default function ARCameraGuide() {
         <BackButton to="/mobile/phase2">
           <ArrowLeft size={24} />
         </BackButton>
-        <Title>AR撮影ガイド</Title>
+        <Title>チーム撮影管理</Title>
         <div style={{ width: '40px' }} />
       </Header>
 

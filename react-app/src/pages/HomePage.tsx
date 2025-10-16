@@ -136,8 +136,8 @@ export default function HomePage() {
             <CardTitle>スマホアプリ</CardTitle>
             <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
-              AR撮影ガイド<br/>
-              音声メモ・チェックリスト
+              チーム報告書編集<br/>
+              承認依頼・共有チェックリスト
             </p>
           </NavCard>
 

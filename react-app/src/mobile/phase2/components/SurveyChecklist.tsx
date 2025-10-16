@@ -281,7 +281,7 @@ export default function SurveyChecklist() {
           <BackButton to="/mobile/phase2">
             <ArrowLeft size={24} />
           </BackButton>
-          <Title>調査チェックリスト</Title>
+          <Title>共有チェックリスト</Title>
           <div style={{ width: '40px' }} />
         </HeaderTop>
         <ProgressBar>

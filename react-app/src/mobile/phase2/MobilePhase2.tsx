@@ -127,28 +127,28 @@ function MobilePhase2Home() {
 
   const features = [
     {
-      icon: <FileText size={24} />,
-      title: '高度な報告書編集',
-      desc: 'リッチテキスト・自動保存・プレビュー',
+      icon: <Users size={24} />,
+      title: 'チーム報告書編集',
+      desc: '複数人で同時に報告書を編集',
       action: () => navigate('/mobile/phase2/editor')
     },
     {
-      icon: <Camera size={24} />,
-      title: 'AR撮影ガイド',
-      desc: '拡張現実で撮影位置をガイド',
-      action: () => navigate('/mobile/phase2/ar-camera')
+      icon: <FileText size={24} />,
+      title: '承認依頼',
+      desc: '作成した報告書を上司に承認依頼',
+      action: null
     },
     {
       icon: <CheckSquare size={24} />,
-      title: 'チェックリスト',
-      desc: '調査項目を漏れなく確認',
+      title: '共有チェックリスト',
+      desc: 'チームで調査項目を共有・確認',
       action: () => navigate('/mobile/phase2/checklist')
     },
     {
-      icon: <Users size={24} />,
-      title: 'グループ管理',
-      desc: 'チームでの報告書共有・承認',
-      action: null
+      icon: <Camera size={24} />,
+      title: 'チーム撮影管理',
+      desc: 'メンバー間で撮影タスクを分担',
+      action: () => navigate('/mobile/phase2/ar-camera')
     },
   ]
 
