@@ -10,6 +10,8 @@ import {
   TrendingUp,
   Workflow,
   Wand2,
+  Shield,
+  UserCog,
 } from 'lucide-react'
 
 const Container = styled.div`
@@ -175,6 +177,30 @@ export default function Phase2Home() {
         '多段階承認フロー',
         'コメント・差し戻し機能',
         '報告書ステータス管理',
+      ],
+    },
+    {
+      to: '/web/phase2/users',
+      icon: <UserCog size={36} />,
+      color: '#4CAF50',
+      title: 'ユーザー管理',
+      description: 'チームメンバーの追加・編集・削除と役割の割り当てを行います。',
+      items: [
+        'ユーザー追加・編集・削除',
+        'ロール割り当て（管理者/マネージャー/編集者）',
+        '作成報告書数の確認',
+      ],
+    },
+    {
+      to: '/web/phase2/permissions',
+      icon: <Shield size={36} />,
+      color: '#9C27B0',
+      title: '権限管理',
+      description: 'ロールごとの詳細な権限設定を管理します。',
+      items: [
+        'ロール別権限マトリクス',
+        '機能ごとのアクセス制御',
+        '権限の一括設定・変更',
       ],
     },
   ]
