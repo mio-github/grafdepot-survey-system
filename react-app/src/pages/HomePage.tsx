@@ -136,8 +136,8 @@ export default function HomePage() {
             <CardTitle>スマホアプリ</CardTitle>
             <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
-              チーム報告書編集<br/>
-              承認依頼・共有チェックリスト
+              Phase1全機能 + チーム編集<br/>
+              承認フロー・共有チェックリスト
             </p>
           </NavCard>
 
@@ -148,7 +148,7 @@ export default function HomePage() {
             <CardTitle>Web管理画面</CardTitle>
             <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
-              複数人での報告書編集<br/>
+              Phase1全機能 + 共同編集<br/>
               グループ管理・承認フロー
             </p>
           </NavCard>

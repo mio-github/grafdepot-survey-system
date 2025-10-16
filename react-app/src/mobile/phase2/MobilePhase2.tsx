@@ -127,28 +127,32 @@ function MobilePhase2Home() {
 
   const features = [
     {
-      icon: <Users size={24} />,
-      title: 'チーム報告書編集',
-      desc: '複数人で同時に報告書を編集',
-      action: () => navigate('/mobile/phase2/editor')
+      icon: <Camera size={24} />,
+      title: '写真撮影',
+      desc: 'GPS・方位情報を自動記録',
+      action: () => navigate('/mobile/phase2/editor'),
+      badge: 'Phase1'
     },
     {
       icon: <FileText size={24} />,
-      title: '承認依頼',
-      desc: '作成した報告書を上司に承認依頼',
-      action: null
+      title: '報告書編集',
+      desc: 'リアルタイム共同編集',
+      action: () => navigate('/mobile/phase2/editor'),
+      badge: 'Phase1+'
+    },
+    {
+      icon: <Users size={24} />,
+      title: '承認フロー',
+      desc: '報告書の承認依頼・管理',
+      action: null,
+      badge: 'Phase2'
     },
     {
       icon: <CheckSquare size={24} />,
       title: '共有チェックリスト',
-      desc: 'チームで調査項目を共有・確認',
-      action: () => navigate('/mobile/phase2/checklist')
-    },
-    {
-      icon: <Camera size={24} />,
-      title: 'チーム撮影管理',
-      desc: 'メンバー間で撮影タスクを分担',
-      action: () => navigate('/mobile/phase2/ar-camera')
+      desc: 'チーム全体で進捗管理',
+      action: () => navigate('/mobile/phase2/checklist'),
+      badge: 'Phase2'
     },
   ]
 
@@ -200,8 +204,20 @@ function MobilePhase2Home() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <IconWrapper>{feature.icon}</IconWrapper>
-                  <div>
-                    <div style={{ fontWeight: 600, marginBottom: '4px' }}>{feature.title}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontWeight: 600 }}>{feature.title}</span>
+                      <span style={{
+                        background: feature.badge === 'Phase2' ? '#FF9800' : feature.badge === 'Phase1+' ? '#4CAF50' : '#005BAC',
+                        color: 'white',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        fontSize: '0.65rem',
+                        fontWeight: 700
+                      }}>
+                        {feature.badge}
+                      </span>
+                    </div>
                     <div style={{ fontSize: '0.875rem', color: '#757575' }}>{feature.desc}</div>
                   </div>
                 </FeatureCard>
@@ -218,7 +234,7 @@ function MobilePhase2Home() {
               border: '1px solid #FFB74D'
             }}>
               <strong style={{ color: '#E65100' }}>フェーズ2の特徴：チームでの利用</strong><br/>
-              複数人での作業分担や承認フローに対応。チーム全体での効率的な報告書作成を実現します。
+              フェーズ1の全機能（写真撮影・GPS記録・報告書編集）に加えて、リアルタイム共同編集・承認フロー・共有チェックリストなどのチーム機能を搭載。
             </div>
           </Content>
         </Screen>
