@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>現地調査アプリ - フェーズ2 フルバージョン</title>
+    <link rel="stylesheet" href="../mobile-app/styles.css">
+    <style>
+        .phase2-feature {
+            background: #FFF3E0;
+            border: 2px solid #FF9800;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .phase2-badge {
+            background: #FF9800;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .checklist-container {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #005BAC;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .checklist-checkbox.checked {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        .ar-guide {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .ar-guide .arrow {
+            font-size: 80px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .voice-memo-btn {
+            position: absolute;
+            bottom: 160px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: #F44336;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="phase-banner phase2">
+        🚀 フェーズ2: 本システム (フル機能版)
+    </div>
+
+    <div class="device-frame">
+        <div class="device-notch"></div>
+
+        <div id="app">
+            <!-- カメラ画面 (フェーズ2拡張版) -->
+            <div id="camera" class="screen active">
+                <div class="camera-view">
+                    <div class="camera-preview">
+                        <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400&h=600&fit=crop" alt="Camera Preview">
+                    </div>
+
+                    <!-- 🆕 AR撮影ガイド -->
+                    <div class="ar-guide">
+                        <div class="arrow">↑</div>
+                        <p>北西方向を撮影してください</p>
+                    </div>
+
+                    <div class="gps-overlay">
+                        <div class="gps-info">
+                            <div class="gps-item">
+                                <span class="icon">📍</span>
+                                <span class="gps-text">GPS: 37.7744, -122.4091</span>
+                            </div>
+                            <div class="gps-item">
+                                <span class="icon">🧭</span>
+                                <span class="gps-text">方位: NW (315°)</span>
+                            </div>
+                            <div class="gps-accuracy good">
+                                <span class="icon">✓</span>
+                                <span>精度: 良好 (5m)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mini-map">
+                        <div class="map-container">
+                            <div class="map-marker">1</div>
+                            <div class="map-arrow">→</div>
+                        </div>
+                    </div>
+
+                    <!-- 🆕 音声メモボタン -->
+                    <button class="voice-memo-btn" onclick="recordVoiceMemo()">
+                        🎤
+                    </button>
+
+                    <div class="camera-controls">
+                        <button class="btn-icon" onclick="showScreen('photoList')">
+                            <span>🖼️</span>
+                            <span class="badge">6</span>
+                        </button>
+                        <button class="btn-capture" onclick="capturePhoto()">
+                            <div class="capture-button">
+                                <div class="capture-button-inner"></div>
+                            </div>
+                        </button>
+                        <button class="btn-icon" onclick="showScreen('checklist')">
+                            <span>✓</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🆕 撮影チェックリスト画面 -->
+            <div id="checklist" class="screen">
+                <header class="app-header">
+                    <div class="header-left" onclick="showScreen('camera')">← 戻る</div>
+                    <h2>撮影チェックリスト<span class="phase2-badge">NEW</span></h2>
+                    <div class="header-right"></div>
+                </header>
+
+                <div class="screen-content">
+                    <div class="phase2-feature">
+                        <strong>🆕 フェーズ2の新機能</strong><br>
+                        撮り忘れを防止！必要な撮影ポイントを確認できます
+                    </div>
+
+                    <div class="checklist-container">
+                        <h3 style="margin-bottom: 12px;">必須撮影項目</h3>
+
+                        <div class="checklist-item">
+                            <div class="checklist-checkbox checked">✓</div>
+                            <div>
+                                <div style="font-weight: 600;">前面道路 (南東側)</div>
+                                <div style="font-size: 12px; color: #757575;">撮影済み - 10:23</div>
+                            </div>
+                        </div>
+
+                        <div class="checklist-item">
+                            <div class="checklist-checkbox checked">✓</div>
+                            <div>
+                                <div style="font-weight: 600;">調査物件 (正面)</div>
+                                <div style="font-size: 12px; color: #757575;">撮影済み - 10:25</div>
+                            </div>
+                        </div>
+
+                        <div class="checklist-item">
+                            <div class="checklist-checkbox">　</div>
+                            <div>
+                                <div style="font-weight: 600;">境界付近 (南西側)</div>
+                                <div style="font-size: 12px; color: #FF9800;">未撮影</div>
+                            </div>
+                        </div>
+
+                        <div class="checklist-item">
+                            <div class="checklist-checkbox">　</div>
+                            <div>
+                                <div style="font-weight: 600;">境界付近 (北東側)</div>
+                                <div style="font-size: 12px; color: #FF9800;">未撮影</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="showScreen('camera')">
+                        カメラに戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- 写真一覧 (拡張版) -->
+            <div id="photoList" class="screen">
+                <header class="app-header">
+                    <div class="header-left" onclick="showScreen('camera')">← 戻る</div>
+                    <h2>撮影済み写真</h2>
+                    <div class="header-right" onclick="uploadPhotos()">☁️ 送信</div>
+                </header>
+
+                <div class="screen-content">
+                    <div class="phase2-feature">
+                        <strong>🆕 AI画像補正</strong><br>
+                        明るさ・コントラストを自動調整します
+                    </div>
+
+                    <div class="upload-status">
+                        <div class="status-item">
+                            <span class="icon">📷</span>
+                            <span>6枚撮影済み</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="icon">🎤</span>
+                            <span>音声メモ 3件</span>
+                        </div>
+                    </div>
+
+                    <div class="photo-grid">
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=200&h=150&fit=crop" alt="Photo 1">
+                            <div class="photo-info">
+                                <span class="photo-number">1</span>
+                                <span class="photo-direction">🎤 NW</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200&h=150&fit=crop" alt="Photo 2">
+                            <div class="photo-info">
+                                <span class="photo-number">2</span>
+                                <span class="photo-direction">SE</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=200&h=150&fit=crop" alt="Photo 3">
+                            <div class="photo-info">
+                                <span class="photo-number">3</span>
+                                <span class="photo-direction">🎤 SW</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop" alt="Photo 4">
+                            <div class="photo-info">
+                                <span class="photo-number">4</span>
+                                <span class="photo-direction">NE</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&h=150&fit=crop" alt="Photo 5">
+                            <div class="photo-info">
+                                <span class="photo-number">5</span>
+                                <span class="photo-direction">🎤 N</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=200&h=150&fit=crop" alt="Photo 6">
+                            <div class="photo-info">
+                                <span class="photo-number">6</span>
+                                <span class="photo-direction">E</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="uploadPhotos()">
+                        ☁️ 6枚を本社へ送信 (AI補正付き)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>🚀 スマートフォンアプリ (フェーズ2: 本システム)</h3>
+        <div class="feature-list">
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>フェーズ1の全機能</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon" style="background: #FFF3E0; color: #FF9800;">NEW</span>
+                <span><strong>撮り忘れ防止チェックリスト</strong></span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon" style="background: #FFF3E0; color: #FF9800;">NEW</span>
+                <span><strong>AR撮影ガイド表示</strong></span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon" style="background: #FFF3E0; color: #FF9800;">NEW</span>
+                <span><strong>音声メモ機能</strong></span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon" style="background: #FFF3E0; color: #FF9800;">NEW</span>
+                <span><strong>プッシュ通知</strong></span>
+            </div>
+        </div>
+
+        <div class="comparison-link">
+            <a href="../../phase1-mvp/mobile-app/index.html" class="btn btn-secondary">
+                ← フェーズ1と比較する
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function capturePhoto() {
+            const preview = document.querySelector('.camera-preview');
+            preview.style.filter = 'brightness(2)';
+            setTimeout(() => {
+                preview.style.filter = 'brightness(1)';
+                alert('📷 写真を撮影しました!\n\n✨ AI補正を適用中...\n\nGPS: 37.7744, -122.4091\n方位: NW (315°)\n精度: 5m');
+            }, 100);
+        }
+
+        function recordVoiceMemo() {
+            alert('🎤 音声メモを録音中...\n\n「建物の北西側、木が一部視界を遮っています」\n\n録音完了！写真に紐付けました。');
+        }
+
+        function uploadPhotos() {
+            alert('✅ アップロード開始!\n\n🤖 AI画像補正を適用\n☁️ 本社へ送信\n\n処理が完了したら通知でお知らせします。');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>現地調査アプリ - フェーズ1 MVP</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- フェーズ表示バナー -->
+    <div class="phase-banner phase1">
+        📱 フェーズ1: MVP開発
+    </div>
+
+    <!-- アプリコンテナ (スマホサイズ) -->
+    <div class="device-frame">
+        <div class="device-notch"></div>
+
+        <div id="app">
+            <!-- ログイン画面 -->
+            <div id="loginScreen" class="screen active">
+                <div class="screen-content">
+                    <div class="logo-container">
+                        <div class="app-icon">📷</div>
+                        <h1>グラフデポ<br>現地調査アプリ</h1>
+                        <p class="version">Phase 1: MVP</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ユーザーID</label>
+                        <input type="text" placeholder="ユーザーIDを入力" value="surveyor001">
+                    </div>
+
+                    <div class="form-group">
+                        <label>パスワード</label>
+                        <input type="password" placeholder="パスワードを入力" value="••••••••">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="showScreen('projectList')">
+                        ログイン
+                    </button>
+                </div>
+            </div>
+
+            <!-- 案件一覧画面 -->
+            <div id="projectList" class="screen">
+                <header class="app-header">
+                    <div class="header-left"></div>
+                    <h2>案件一覧</h2>
+                    <div class="header-right">⚙️</div>
+                </header>
+
+                <div class="screen-content">
+                    <div class="project-card" onclick="showScreen('camera')">
+                        <div class="project-card-header">
+                            <span class="project-id">案件 #3126627</span>
+                            <span class="status-badge status-inprogress">調査中</span>
+                        </div>
+                        <h3>兵庫県相生市山手2丁目73</h3>
+                        <div class="project-meta">
+                            <div class="meta-item">
+                                <span class="icon">📅</span>
+                                <span>2024年6月7日</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="icon">📷</span>
+                                <span>6枚撮影済み</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <span class="link-text">撮影を続ける →</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-card-header">
+                            <span class="project-id">案件 #3126628</span>
+                            <span class="status-badge status-completed">完了</span>
+                        </div>
+                        <h3>埼玉県秩父郡小鹿野町両神薄248-2</h3>
+                        <div class="project-meta">
+                            <div class="meta-item">
+                                <span class="icon">📅</span>
+                                <span>2024年7月16日</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="icon">📷</span>
+                                <span>8枚撮影済み</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-card-header">
+                            <span class="project-id">案件 #3126629</span>
+                            <span class="status-badge status-pending">未着手</span>
+                        </div>
+                        <h3>東京都千代田区丸の内1-1-1</h3>
+                        <div class="project-meta">
+                            <div class="meta-item">
+                                <span class="icon">📅</span>
+                                <span>2024年10月20日</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="icon">📷</span>
+                                <span>未撮影</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- カメラ画面 -->
+            <div id="camera" class="screen">
+                <div class="camera-view">
+                    <!-- カメラプレビュー (擬似) -->
+                    <div class="camera-preview">
+                        <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400&h=600&fit=crop" alt="Camera Preview">
+                    </div>
+
+                    <!-- GPS情報オーバーレイ -->
+                    <div class="gps-overlay">
+                        <div class="gps-info">
+                            <div class="gps-item">
+                                <span class="icon">📍</span>
+                                <span class="gps-text">GPS: 37.7744, -122.4091</span>
+                            </div>
+                            <div class="gps-item">
+                                <span class="icon">🧭</span>
+                                <span class="gps-text">方位: NW (315°)</span>
+                            </div>
+                            <div class="gps-accuracy good">
+                                <span class="icon">✓</span>
+                                <span>精度: 良好 (5m)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ミニマップ -->
+                    <div class="mini-map">
+                        <div class="map-container">
+                            <div class="map-marker">1</div>
+                            <div class="map-arrow">→</div>
+                        </div>
+                    </div>
+
+                    <!-- カメラコントロール -->
+                    <div class="camera-controls">
+                        <button class="btn-icon" onclick="showScreen('photoList')">
+                            <span>🖼️</span>
+                            <span class="badge">6</span>
+                        </button>
+                        <button class="btn-capture" onclick="capturePhoto()">
+                            <div class="capture-button">
+                                <div class="capture-button-inner"></div>
+                            </div>
+                        </button>
+                        <button class="btn-icon" onclick="showScreen('projectList')">
+                            <span>✕</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 撮影済み写真一覧 -->
+            <div id="photoList" class="screen">
+                <header class="app-header">
+                    <div class="header-left" onclick="showScreen('camera')">← 戻る</div>
+                    <h2>撮影済み写真</h2>
+                    <div class="header-right" onclick="uploadPhotos()">☁️ 送信</div>
+                </header>
+
+                <div class="screen-content">
+                    <div class="upload-status">
+                        <div class="status-item">
+                            <span class="icon">📷</span>
+                            <span>6枚撮影済み</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="icon">☁️</span>
+                            <span>未送信</span>
+                        </div>
+                    </div>
+
+                    <div class="photo-grid">
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=200&h=150&fit=crop" alt="Photo 1">
+                            <div class="photo-info">
+                                <span class="photo-number">1</span>
+                                <span class="photo-direction">NW 315°</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200&h=150&fit=crop" alt="Photo 2">
+                            <div class="photo-info">
+                                <span class="photo-number">2</span>
+                                <span class="photo-direction">SE 135°</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=200&h=150&fit=crop" alt="Photo 3">
+                            <div class="photo-info">
+                                <span class="photo-number">3</span>
+                                <span class="photo-direction">SW 225°</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop" alt="Photo 4">
+                            <div class="photo-info">
+                                <span class="photo-number">4</span>
+                                <span class="photo-direction">NE 45°</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&h=150&fit=crop" alt="Photo 5">
+                            <div class="photo-info">
+                                <span class="photo-number">5</span>
+                                <span class="photo-direction">N 0°</span>
+                            </div>
+                        </div>
+                        <div class="photo-grid-item">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=200&h=150&fit=crop" alt="Photo 6">
+                            <div class="photo-info">
+                                <span class="photo-number">6</span>
+                                <span class="photo-direction">E 90°</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="uploadPhotos()">
+                        ☁️ 6枚を本社へ送信
+                    </button>
+                </div>
+            </div>
+
+            <!-- アップロード中画面 -->
+            <div id="uploading" class="screen">
+                <div class="screen-content center">
+                    <div class="loader"></div>
+                    <h2>アップロード中...</h2>
+                    <p class="upload-progress">3 / 6 枚</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%"></div>
+                    </div>
+                    <p class="text-muted">本社へデータを送信しています</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 説明パネル -->
+    <div class="info-panel">
+        <h3>📱 スマートフォンアプリ (フェーズ1: MVP)</h3>
+        <div class="feature-list">
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>GPS位置情報の自動記録</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>電子コンパスによる方位自動記録</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>写真撮影機能</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>クラウドアップロード</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✓</span>
+                <span>オフライン対応</span>
+            </div>
+        </div>
+
+        <div class="comparison-link">
+            <a href="../phase2-full/mobile-app/index.html" class="btn btn-secondary">
+                フェーズ2の機能を見る →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 画面遷移
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // 写真撮影
+        function capturePhoto() {
+            // アニメーション効果
+            const preview = document.querySelector('.camera-preview');
+            preview.style.filter = 'brightness(2)';
+            setTimeout(() => {
+                preview.style.filter = 'brightness(1)';
+                alert('📷 写真を撮影しました!\n\nGPS: 37.7744, -122.4091\n方位: NW (315°)\n精度: 5m');
+            }, 100);
+        }
+
+        // アップロード
+        function uploadPhotos() {
+            showScreen('uploading');
+
+            // シミュレーション: 3秒後に完了
+            setTimeout(() => {
+                alert('✅ アップロード完了!\n\n6枚の写真を本社へ送信しました。\n報告書作成画面で確認できます。');
+                showScreen('projectList');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

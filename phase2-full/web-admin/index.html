@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>グラフデポ 調査報告書作成システム - フェーズ2 フルバージョン</title>
+    <link rel="stylesheet" href="../../phase1-mvp/web-admin/styles.css">
+    <style>
+        .phase2-feature-banner {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 16px 24px;
+            margin: -24px -24px 24px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .ai-badge {
+            background: #9C27B0;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .analytics-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #005BAC;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #757575;
+            font-weight: 600;
+        }
+
+        .ai-panel {
+            background: linear-gradient(135deg, #E1BEE7 0%, #CE93D8 100%);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .ai-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #4A148C;
+            margin-bottom: 12px;
+        }
+
+        .ai-result {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .excel-preview {
+            background: #E8F5E9;
+            border: 2px dashed #4CAF50;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .template-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .template-card {
+            flex: 1;
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-card:hover {
+            border-color: #005BAC;
+        }
+
+        .template-card.selected {
+            border-color: #005BAC;
+            background: #E3F2FD;
+        }
+    </style>
+</head>
+<body>
+    <div class="phase-banner phase2">
+        🚀 フェーズ2: 本システム (フル機能版) - Web管理システム
+    </div>
+
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">グラフデポ 調査報告書作成システム</span>
+                <span class="version-tag" style="background: #FFF3E0; color: #FF9800;">Phase 2</span>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link active">📋 案件一覧</a>
+                <a href="#dashboard" class="nav-link">📊 ダッシュボード<span class="ai-badge">NEW</span></a>
+                <a href="#" class="nav-link">👤 ユーザー管理</a>
+                <a href="#" class="nav-link">⚙️ 設定</a>
+                <div class="user-menu">
+                    <span>山田 太郎</span>
+                    <button class="btn-logout">ログアウト</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- ダッシュボード -->
+        <div id="dashboard" class="view active">
+            <div class="phase2-feature-banner">
+                <span style="font-size: 32px;">🤖</span>
+                <div>
+                    <strong>フェーズ2の新機能</strong><br>
+                    <span style="font-size: 14px;">AIによる画像解析・自動ラベル付け・データ分析機能を搭載</span>
+                </div>
+            </div>
+
+            <!-- 統計情報 -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">243</div>
+                    <div class="stat-label">総案件数</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);">
+                    <div class="stat-value" style="color: #E65100;">18</div>
+                    <div class="stat-label">処理中</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);">
+                    <div class="stat-value" style="color: #2E7D32;">225</div>
+                    <div class="stat-label">完了</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #FCE4EC 0%, #F8BBD0 100%);">
+                    <div class="stat-value" style="color: #C2185B;">4.2h</div>
+                    <div class="stat-label">平均処理時間</div>
+                </div>
+            </div>
+
+            <!-- AI機能パネル -->
+            <div class="analytics-card">
+                <h2 style="margin-bottom: 20px;">🤖 AI支援機能</h2>
+
+                <div class="ai-panel">
+                    <div class="ai-panel-header">
+                        <span>🎨</span>
+                        <span>AI画像解析・補正</span>
+                    </div>
+                    <div class="ai-result">
+                        ✓ 自動明るさ調整: 6枚<br>
+                        ✓ コントラスト最適化: 6枚<br>
+                        ✓ 歪み補正: 2枚<br>
+                        ✓ 建物輪郭検出完了
+                    </div>
+                </div>
+
+                <div class="ai-panel" style="background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);">
+                    <div class="ai-panel-header" style="color: #01579B;">
+                        <span>🏷️</span>
+                        <span>自動ラベル生成</span>
+                    </div>
+                    <div class="ai-result">
+                        写真1: 「調査物件を撮影」<br>
+                        写真2: 「前面道路(南東側)を撮影」<br>
+                        写真3: 「境界付近(南西側)を撮影」<br>
+                        <em>※AIが写真内容を解析し自動でラベルを付与</em>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 案件一覧 -->
+            <div class="page-header" style="margin-top: 32px;">
+                <h1>案件一覧</h1>
+                <button class="btn btn-primary">+ 新規案件</button>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-card" onclick="openAdvancedMapEditor()">
+                    <div class="project-card-header">
+                        <div>
+                            <span class="project-id">#3126627<span class="ai-badge">AI処理済</span></span>
+                            <h3>兵庫県相生市山手2丁目73</h3>
+                        </div>
+                        <span class="status-badge status-ready">編集可</span>
+                    </div>
+                    <div class="project-meta">
+                        <div class="meta-row">
+                            <span>📅 調査日: 2024年6月7日</span>
+                            <span>📷 写真: 6枚</span>
+                        </div>
+                        <div class="meta-row">
+                            <span>👤 調査員: 鈴木一郎</span>
+                            <span>🤖 AI補正完了</span>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <button class="btn btn-secondary">報告書自動生成 →</button>
+                        <button class="btn btn-text">Excel出力</button>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div>
+                            <span class="project-id">#3126628<span class="ai-badge">AI処理済</span></span>
+                            <h3>埼玉県秩父郡小鹿野町両神薄248-2</h3>
+                        </div>
+                        <span class="status-badge status-completed">完了</span>
+                    </div>
+                    <div class="project-meta">
+                        <div class="meta-row">
+                            <span>📅 調査日: 2024年7月16日</span>
+                            <span>📷 写真: 8枚</span>
+                        </div>
+                        <div class="meta-row">
+                            <span>👤 調査員: 佐藤花子</span>
+                            <span>✓ 承認済み</span>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <button class="btn btn-text">詳細を見る</button>
+                        <button class="btn btn-text">PDF/Excel出力</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 高度な報告書生成画面 -->
+        <div id="advancedMapEditor" class="view">
+            <div style="background: white; border-radius: 12px; padding: 32px;">
+                <button class="btn btn-text" onclick="closeAdvancedMapEditor()">← ダッシュボードに戻る</button>
+
+                <h2 style="margin: 24px 0;">🤖 AI自動報告書生成<span class="ai-badge">フェーズ2</span></h2>
+
+                <!-- テンプレート選択 -->
+                <h3 style="margin-bottom: 16px;">テンプレート選択</h3>
+                <div class="template-selector">
+                    <div class="template-card selected">
+                        <div style="font-size: 32px; margin-bottom: 8px;">📄</div>
+                        <strong>標準PDF</strong>
+                        <p style="font-size: 12px; color: #757575; margin-top: 4px;">地図+写真レイアウト</p>
+                    </div>
+                    <div class="template-card">
+                        <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+                        <strong>Excel形式</strong>
+                        <p style="font-size: 12px; color: #757575; margin-top: 4px;">既存フォーマット準拠</p>
+                    </div>
+                    <div class="template-card">
+                        <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
+                        <strong>詳細レポート</strong>
+                        <p style="font-size: 12px; color: #757575; margin-top: 4px;">AI解析結果付き</p>
+                    </div>
+                </div>
+
+                <!-- プレビュー -->
+                <h3 style="margin-bottom: 16px;">生成プレビュー</h3>
+                <div class="excel-preview">
+                    <div style="font-size: 48px; margin-bottom: 12px;">📊</div>
+                    <strong>報告書が自動生成されました!</strong>
+                    <p style="color: #757575; margin-top: 8px;">
+                        ✓ 地図上に写真位置を自動プロット<br>
+                        ✓ AIが生成したラベルを自動配置<br>
+                        ✓ 画像補正を適用<br>
+                        ✓ レイアウトを最適化
+                    </p>
+                </div>
+
+                <!-- アクションボタン -->
+                <div style="display: flex; gap: 16px;">
+                    <button class="btn btn-primary" style="flex: 1;" onclick="alert('📄 PDFをダウンロードしました!')">
+                        📄 PDFダウンロード
+                    </button>
+                    <button class="btn btn-primary" style="flex: 1; background: #4CAF50;" onclick="alert('📊 Excelをダウンロードしました!')">
+                        📊 Excel出力
+                    </button>
+                    <button class="btn btn-secondary" onclick="alert('地図編集画面を開きます')">
+                        ✏️ 手動編集
+                    </button>
+                </div>
+
+                <!-- データ分析 -->
+                <div style="margin-top: 40px; padding-top: 32px; border-top: 2px solid #F5F5F5;">
+                    <h3 style="margin-bottom: 16px;">📊 業務データ分析<span class="ai-badge">フェーズ2</span></h3>
+
+                    <div style="background: #F5F5F5; padding: 20px; border-radius: 8px;">
+                        <strong>本案件の処理統計:</strong>
+                        <ul style="margin: 12px 0; line-height: 1.8;">
+                            <li>撮影から報告書生成まで: <strong>32分</strong> (平均比 -76%)</li>
+                            <li>AI自動補正: 6枚 (100%)</li>
+                            <li>手動調整: 0箇所 (GPS精度良好)</li>
+                            <li>処理効率: <strong style="color: #4CAF50;">優秀</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feature-panel">
+        <h3>🚀 Web管理システム (フェーズ2: 本システム)</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">✓</div>
+                <div class="feature-text">
+                    <strong>フェーズ1の全機能</strong>
+                    <p>基本的な地図編集・PDF出力</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #E1BEE7; color: #9C27B0;">AI</div>
+                <div class="feature-text">
+                    <strong>AI画像解析・補正</strong>
+                    <p>自動で明るさ・コントラスト調整</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #E1BEE7; color: #9C27B0;">AI</div>
+                <div class="feature-text">
+                    <strong>自動ラベル生成</strong>
+                    <p>AIが写真内容を解析してラベル付け</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #FFF3E0; color: #FF9800;">NEW</div>
+                <div class="feature-text">
+                    <strong>報告書自動生成</strong>
+                    <p>テンプレートから完全自動作成</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #FFF3E0; color: #FF9800;">NEW</div>
+                <div class="feature-text">
+                    <strong>Excel出力</strong>
+                    <p>既存フォーマットに準拠</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #FFF3E0; color: #FF9800;">NEW</div>
+                <div class="feature-text">
+                    <strong>データ分析</strong>
+                    <p>処理時間・効率の統計分析</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-link">
+            <a href="../../phase1-mvp/web-admin/index.html" class="btn btn-secondary">
+                ← フェーズ1と比較する
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function openAdvancedMapEditor() {
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('advancedMapEditor').classList.add('active');
+        }
+
+        function closeAdvancedMapEditor() {
+            document.getElementById('advancedMapEditor').classList.remove('active');
+            document.getElementById('dashboard').classList.add('active');
+        }
+    </script>
+</body>
+</html>
