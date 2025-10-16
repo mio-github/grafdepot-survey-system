@@ -5,6 +5,8 @@ import { FileText, Camera, Users, CheckSquare, ArrowLeft, Sparkles } from 'lucid
 import AdvancedEditor from './components/AdvancedEditor'
 import ARCameraGuide from './components/ARCameraGuide'
 import SurveyChecklist from './components/SurveyChecklist'
+import CameraScreen from './components/CameraScreen'
+import ApprovalScreen from './components/ApprovalScreen'
 
 const Container = styled.div`
   min-height: 100vh;
@@ -130,7 +132,7 @@ function MobilePhase2Home() {
       icon: <Camera size={24} />,
       title: '写真撮影',
       desc: 'GPS・方位情報を自動記録',
-      action: () => navigate('/mobile/phase2/editor'),
+      action: () => navigate('/mobile/phase2/camera'),
       badge: 'Phase1'
     },
     {
@@ -144,7 +146,7 @@ function MobilePhase2Home() {
       icon: <Users size={24} />,
       title: '承認フロー',
       desc: '報告書の承認依頼・管理',
-      action: null,
+      action: () => navigate('/mobile/phase2/approval'),
       badge: 'Phase2'
     },
     {
@@ -285,6 +287,34 @@ export default function MobilePhase2() {
             <Notch />
             <Screen>
               <SurveyChecklist />
+            </Screen>
+          </DeviceFrame>
+        </Container>
+      } />
+      <Route path="/camera" element={
+        <Container>
+          <DeviceFrame
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Notch />
+            <Screen>
+              <CameraScreen />
+            </Screen>
+          </DeviceFrame>
+        </Container>
+      } />
+      <Route path="/approval" element={
+        <Container>
+          <DeviceFrame
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Notch />
+            <Screen>
+              <ApprovalScreen />
             </Screen>
           </DeviceFrame>
         </Container>
