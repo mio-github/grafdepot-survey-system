@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { Link, Routes, Route, useNavigate } from 'react-router-dom'
 import { FileText, Camera, Users, CheckSquare, ArrowLeft, Sparkles } from 'lucide-react'
 import AdvancedEditor from './components/AdvancedEditor'
+import ARCameraGuide from './components/ARCameraGuide'
+import SurveyChecklist from './components/SurveyChecklist'
 
 const Container = styled.div`
   min-height: 100vh;
@@ -134,13 +136,13 @@ function MobilePhase2Home() {
       icon: <Camera size={24} />,
       title: 'AR撮影ガイド',
       desc: '拡張現実で撮影位置をガイド',
-      action: null
+      action: () => navigate('/mobile/phase2/ar-camera')
     },
     {
       icon: <CheckSquare size={24} />,
       title: 'チェックリスト',
       desc: '調査項目を漏れなく確認',
-      action: null
+      action: () => navigate('/mobile/phase2/checklist')
     },
     {
       icon: <Users size={24} />,
@@ -239,6 +241,34 @@ export default function MobilePhase2() {
             <Notch />
             <Screen>
               <AdvancedEditor />
+            </Screen>
+          </DeviceFrame>
+        </Container>
+      } />
+      <Route path="/ar-camera" element={
+        <Container>
+          <DeviceFrame
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Notch />
+            <Screen>
+              <ARCameraGuide />
+            </Screen>
+          </DeviceFrame>
+        </Container>
+      } />
+      <Route path="/checklist" element={
+        <Container>
+          <DeviceFrame
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Notch />
+            <Screen>
+              <SurveyChecklist />
             </Screen>
           </DeviceFrame>
         </Container>
