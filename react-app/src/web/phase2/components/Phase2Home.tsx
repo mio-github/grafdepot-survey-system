@@ -158,23 +158,11 @@ export default function Phase2Home() {
       icon: <FileText size={36} />,
       color: '#005BAC',
       title: '報告書編集',
-      description: '複数人で協力して報告書を作成。地図への写真配置や視線矢印の設定が可能です。',
+      description: '複数人で協力して報告書を作成。AI自動生成機能で作業時間を大幅削減。',
       items: [
         '写真配置（GPS連動）',
         '視線矢印配置',
-        'リアルタイム保存',
-      ],
-    },
-    {
-      to: '/web/phase2/ai-generator',
-      icon: <Wand2 size={36} />,
-      color: '#9C27B0',
-      title: 'AI報告書生成',
-      description: '写真と位置情報からAIが報告書を自動生成。編集・修正も可能です。',
-      items: [
-        '写真解析による自動文章生成',
-        '建物状態の自動評価',
-        '周辺環境の自動分析',
+        'AI報告書自動生成（約80%効率化）',
       ],
     },
     {

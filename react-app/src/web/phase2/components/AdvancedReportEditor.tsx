@@ -17,6 +17,7 @@ import {
   Navigation,
   Wand2,
   Download,
+  Loader,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -405,13 +406,34 @@ const CloseButton = styled.button`
 
 export default function AdvancedReportEditor() {
   const navigate = useNavigate()
+  const [generating, setGenerating] = useState(false)
   const [report, setReport] = useState({
     summary: '兵庫県相生市山手2丁目73の担保物件について、現地調査を実施しました。',
     findings: '物件は住宅地に位置し、周辺環境は良好です。建物の外観に軽微な劣化が見られますが、構造上の問題はありません。',
     recommendations: '定期的なメンテナンスを推奨します。特に外壁のひび割れ部分については、経過観察が必要です。',
   })
 
+  const handleAIGenerate = () => {
+    setGenerating(true)
+    setTimeout(() => {
+      setReport({
+        summary: '兵庫県相生市山手2丁目73に所在する本物件について、2024年6月7日に現地調査を実施しました。物件は閑静な住宅地に位置し、周辺環境は良好です。建物は木造2階建てで、築年数は約25年と推定されます。',
+        findings: '【外観】建物外壁に経年劣化による色褪せが見られますが、構造上の重大な問題は確認されませんでした。屋根瓦の一部にずれが見られます。【周辺環境】閑静な住宅街に位置し、日当たり良好。最寄り駅まで徒歩15分、商業施設へのアクセスも良好です。騒音等の環境問題は特に見られません。【内部】内装は概ね良好な状態を保っています。水回りに軽微な劣化が見られますが、使用には問題ありません。',
+        recommendations: '【メンテナンス提案】屋根瓦のずれについては、雨漏りのリスクがあるため早期の補修を推奨します。外壁については、美観維持のため3年以内の再塗装を検討されることをお勧めします。【総合評価】立地条件、建物状態ともに良好であり、適切なメンテナンスを実施することで長期的な利用が可能と判断されます。担保価値としても十分な水準にあると評価できます。',
+      })
+      setGenerating(false)
+      alert('AIが写真を解析し、報告書を自動生成しました！')
+    }, 2000)
+  }
+
   const tools = [
+    {
+      icon: <Wand2 size={20} />,
+      color: '#9C27B0',
+      title: 'AI自動生成',
+      desc: '写真からAIが報告書を作成',
+      action: handleAIGenerate,
+    },
     {
       icon: <MapPin size={20} />,
       color: '#005BAC',
@@ -482,13 +504,25 @@ export default function AdvancedReportEditor() {
           {tools.map((tool, index) => (
             <ToolCard
               key={index}
-              onClick={tool.action}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              onClick={generating && index === 0 ? undefined : tool.action}
+              whileHover={{ scale: generating && index === 0 ? 1 : 1.02 }}
+              whileTap={{ scale: generating && index === 0 ? 1 : 0.98 }}
+              style={{
+                opacity: generating && index === 0 ? 0.7 : 1,
+                cursor: generating && index === 0 ? 'wait' : 'pointer'
+              }}
             >
               <ToolHeader>
-                <ToolIcon $color={tool.color}>{tool.icon}</ToolIcon>
-                <ToolTitle>{tool.title}</ToolTitle>
+                <ToolIcon $color={tool.color}>
+                  {generating && index === 0 ? (
+                    <Loader size={20} className="spin" />
+                  ) : (
+                    tool.icon
+                  )}
+                </ToolIcon>
+                <ToolTitle>
+                  {generating && index === 0 ? 'AI生成中...' : tool.title}
+                </ToolTitle>
               </ToolHeader>
               <ToolDesc>{tool.desc}</ToolDesc>
             </ToolCard>
@@ -613,6 +647,15 @@ export default function AdvancedReportEditor() {
         </EditorArea>
       </MainContent>
 
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .spin {
+          animation: spin 1s linear infinite;
+        }
+      `}</style>
     </Container>
   )
 }
