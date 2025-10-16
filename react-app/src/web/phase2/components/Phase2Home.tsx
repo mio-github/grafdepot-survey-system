@@ -166,6 +166,18 @@ export default function Phase2Home() {
       ],
     },
     {
+      to: '/web/phase2/ai-generator',
+      icon: <Wand2 size={36} />,
+      color: '#9C27B0',
+      title: 'AI報告書生成',
+      description: '写真と位置情報からAIが報告書を自動生成。編集・修正も可能です。',
+      items: [
+        '写真解析による自動文章生成',
+        '建物状態の自動評価',
+        '周辺環境の自動分析',
+      ],
+    },
+    {
       to: '/web/phase2/approval',
       icon: <Users size={36} />,
       color: '#FF9800',

@@ -148,8 +148,8 @@ export default function HomePage() {
             <CardTitle>Web管理画面</CardTitle>
             <Badge $color="#FF9800">フェーズ2: チーム利用</Badge>
             <p style={{ fontSize: '0.875rem', color: '#757575', textAlign: 'center' }}>
-              Phase1全機能 + 共同編集<br/>
-              グループ管理・承認フロー
+              Phase1全機能 + AI報告書生成<br/>
+              共同編集・承認フロー
             </p>
           </NavCard>
         </Grid>
