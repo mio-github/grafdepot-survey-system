@@ -5,7 +5,7 @@ import { FileText, Camera, Users, CheckSquare, ArrowLeft, Sparkles } from 'lucid
 import AdvancedEditor from './components/AdvancedEditor'
 import ARCameraGuide from './components/ARCameraGuide'
 import SurveyChecklist from './components/SurveyChecklist'
-import CameraScreen from './components/CameraScreen'
+import ARCameraScreen from './components/ARCameraScreen'
 import ApprovalScreen from './components/ApprovalScreen'
 
 const Container = styled.div`
@@ -293,7 +293,7 @@ export default function MobilePhase2() {
           >
             <Notch />
             <Screen>
-              <CameraScreen />
+              <ARCameraScreen />
             </Screen>
           </DeviceFrame>
         </Container>
