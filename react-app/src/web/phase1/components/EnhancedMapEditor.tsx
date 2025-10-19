@@ -25,8 +25,7 @@ import { useNavigate } from 'react-router-dom'
 const MAP_IMAGE_WIDTH = 1768
 const MAP_IMAGE_HEIGHT = 1166
 const TARGET_IMAGE_COORD = { x: 720, y: 750 } // 調査対象地の座標（画像ピクセル基準）
-const ARROW_TIP_OFFSET = 32
-const UNIFIED_ARROW_ANGLE = 45 // すべての矢印の初期角度（度）- ドラッグで変更可能
+const ARROW_TIP_OFFSET = 32 // 矢印の先端オフセット（調査対象地の手前で矢印を止める）
 
 const Container = styled.div`
   display: flex;
@@ -802,13 +801,19 @@ export default function EnhancedMapEditor() {
   const [arrows, setArrows] = useState<Arrow[]>([])
 
   const calculateAngleToTarget = (markerX: number, markerY: number): number => {
-    // すべての矢印を同じ角度にする（UNIFIED_ARROW_ANGLE）
-    return UNIFIED_ARROW_ANGLE
+    // マーカーから調査対象地への角度を計算
+    const dx = TARGET_IMAGE_COORD.x - markerX
+    const dy = TARGET_IMAGE_COORD.y - markerY
+    return Math.atan2(dy, dx) * (180 / Math.PI)
   }
 
   const calculateArrowLength = (markerX: number, markerY: number): number => {
-    // すべての矢印を同じ長さにする
-    return 80
+    // マーカーから調査対象地までの距離を計算
+    const dx = TARGET_IMAGE_COORD.x - markerX
+    const dy = TARGET_IMAGE_COORD.y - markerY
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    // 矢印の先端のオフセット分を引く（調査対象地の手前で止める）
+    return Math.max(distance - ARROW_TIP_OFFSET, 32)
   }
 
   const [draggedPhoto, setDraggedPhoto] = useState<number | null>(null)
@@ -910,10 +915,7 @@ export default function EnhancedMapEditor() {
 
   const updateArrowAngle = (arrowId: number, clientX: number, clientY: number) => {
     const mapRect = mapViewRef.current?.getBoundingClientRect()
-    if (!mapRect) {
-      console.log('updateArrowAngle: mapRect is null')
-      return
-    }
+    if (!mapRect) return
 
     const pointerX = clientX - mapRect.left
     const pointerY = clientY - mapRect.top
@@ -922,18 +924,13 @@ export default function EnhancedMapEditor() {
       prev.map(arrow => {
         if (arrow.id !== arrowId) return arrow
         const angle = Math.atan2(pointerY - arrow.y, pointerX - arrow.x) * (180 / Math.PI)
-        console.log(`updateArrowAngle: arrow ${arrowId}, angle=${angle.toFixed(1)}°`)
         return { ...arrow, angle }
       }),
     )
   }
 
   const handleArrowPointerDown = (arrowId: number) => (event: React.PointerEvent<HTMLDivElement>) => {
-    console.log(`handleArrowPointerDown called for arrow ${arrowId}`)
-    if ((event.target as HTMLElement).closest('button')) {
-      console.log('Clicked on button, ignoring')
-      return
-    }
+    if ((event.target as HTMLElement).closest('button')) return
 
     event.preventDefault()
     event.stopPropagation()
@@ -993,14 +990,9 @@ export default function EnhancedMapEditor() {
   }
 
   useEffect(() => {
-    console.log('useEffect for arrows triggered, targetPosition:', targetPosition)
-    if (!targetPosition) {
-      console.log('targetPosition is null, skipping arrow initialization')
-      return
-    }
+    if (!targetPosition) return
 
     setArrows(prevArrows => {
-      console.log('Initializing arrows, prevArrows:', prevArrows)
       const existingByPhoto = new Map<number, Arrow>()
       prevArrows.forEach(arrow => {
         if (!existingByPhoto.has(arrow.photoId)) {
@@ -1010,10 +1002,9 @@ export default function EnhancedMapEditor() {
 
       const recalculated = markers.map(marker => {
         const previous = existingByPhoto.get(marker.photoId)
-        // 初期角度として常にUNIFIED_ARROW_ANGLEを使用（ユーザーがドラッグで変更した場合はその角度を保持）
-        const angle = previous?.angle ?? UNIFIED_ARROW_ANGLE
-        const length = previous?.length ?? 80
-        console.log(`Marker ${marker.photoId}: previous=${previous?.angle}, final=${angle}`)
+        // 初期角度は調査対象地を向く角度を計算（ユーザーがドラッグで変更した場合はその角度を保持）
+        const angle = previous?.angle ?? calculateAngleToTarget(marker.x, marker.y)
+        const length = previous?.length ?? calculateArrowLength(marker.x, marker.y)
         return {
           id: previous?.id ?? marker.id,
           photoId: marker.photoId,
@@ -1299,12 +1290,8 @@ export default function EnhancedMapEditor() {
 
           {arrows.map((arrow) => {
             const photo = photos.find(p => p.id === arrow.photoId)
-            if (!photo) {
-              console.log(`Arrow ${arrow.id} has no matching photo`)
-              return null
-            }
+            if (!photo) return null
 
-            console.log(`Rendering arrow ${arrow.id} at (${arrow.x}, ${arrow.y}) with angle ${arrow.angle}°`)
             return (
               <ViewArrow
                 key={arrow.id}
