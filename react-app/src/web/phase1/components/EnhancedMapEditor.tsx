@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -21,6 +21,12 @@ import {
   Navigation,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+
+const MAP_IMAGE_WIDTH = 1768
+const MAP_IMAGE_HEIGHT = 1166
+const TARGET_IMAGE_COORD = { x: 720, y: 750 } // 調査対象地の座標（画像ピクセル基準）
+const ARROW_TIP_OFFSET = 32
+const UNIFIED_ARROW_ANGLE = 45 // すべての矢印の初期角度（度）- ドラッグで変更可能
 
 const Container = styled.div`
   display: flex;
@@ -360,9 +366,9 @@ const MapImage = styled.div`
   font-size: 0.875rem;
   color: #9E9E9E;
 
-  /* 実際の図面を背景に表示 - 大きめに */
-  background-image: url('/assets/maps/sample-map.pdf.png');
-  background-size: 85%;
+  /* sample01-map.pngを背景に表示 */
+  background-image: url('/assets/maps/sample01-map.png');
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 
@@ -383,6 +389,61 @@ const MapOverlay = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: none;
+`
+
+const TargetMarker = styled.div<{ $x: number; $y: number }>`
+  position: absolute;
+  top: ${props => props.$y}px;
+  left: ${props => props.$x}px;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  z-index: 5;
+
+  /* 赤い十字マーク */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: #FF0000;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+  }
+
+  /* 縦線 */
+  &::before {
+    top: 0;
+    left: 50%;
+    width: 3px;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+
+  /* 横線 */
+  &::after {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    transform: translateY(-50%);
+  }
+`
+
+const TargetLabel = styled.div<{ $x: number; $y: number }>`
+  position: absolute;
+  top: ${props => props.$y}px;
+  left: ${props => props.$x}px;
+  transform: translate(-50%, calc(-50% + 24px));
+  background: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 `
 
 const MapStreet = styled.div<{ $horizontal?: boolean; $position: number }>`
@@ -507,43 +568,60 @@ const MarkerActionButton = styled.button`
   }
 `
 
-const ViewArrow = styled(motion.div)<{ $x: number; $y: number; $angle: number; $length: number }>`
+const ViewArrow = styled(motion.div)<{ $x: number; $y: number; $angle: number; $length: number; $isActive?: boolean }>`
   position: absolute;
   left: ${props => props.$x}px;
   top: ${props => props.$y}px;
   width: ${props => props.$length}px;
-  height: 3px;
-  background: #FF5722;
-  transform-origin: left center;
-  transform: rotate(${props => props.$angle}deg);
-  cursor: move;
-  z-index: 5;
+  height: 20px; /* クリックしやすいように高さを増やす */
+  cursor: ${props => props.$isActive ? 'grabbing' : 'grab'};
+  z-index: 15;
+  transition: box-shadow 0.2s ease;
 
+  /* デバッグ用: 矢印の領域を可視化 */
+  background: ${props => props.$isActive ? 'rgba(255, 87, 34, 0.1)' : 'transparent'};
+
+  /* 矢印の線（疑似要素の前に配置） */
   &::before {
     content: '';
     position: absolute;
-    right: -10px;
     top: 50%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #FF5722;
     transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  /* 矢印の先端（三角形） */
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(12px, -50%); /* 三角形を線の右端に配置 */
     width: 0;
     height: 0;
     border-left: 12px solid #FF5722;
     border-top: 6px solid transparent;
     border-bottom: 6px solid transparent;
+    pointer-events: none;
   }
+`
 
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    background: #FF5722;
-    border-radius: 50%;
-    border: 2px solid white;
-  }
+/* 矢印の始点マーカー（円形） */
+const ArrowStartMarker = styled.div`
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: #FF5722;
+  border-radius: 50%;
+  border: 2px solid white;
+  pointer-events: none;
 `
 
 const ArrowActions = styled.div`
@@ -657,24 +735,86 @@ const samplePhotos: Photo[] = [
 
 export default function EnhancedMapEditor() {
   const navigate = useNavigate()
+  const mapViewRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<HTMLDivElement>(null)
   const [photos] = useState<Photo[]>(samplePhotos)
   const [mode, setMode] = useState<'marker' | 'arrow'>('marker')
+  const [targetPosition, setTargetPosition] = useState<{ x: number; y: number } | null>(TARGET_IMAGE_COORD)
+  const [activeArrowId, setActiveArrowId] = useState<number | null>(null)
+  const rotatingArrowIdRef = useRef<number | null>(null)
+  const pointerMoveListenerRef = useRef<((event: PointerEvent) => void) | null>(null)
+  const pointerUpListenerRef = useRef<((event: PointerEvent) => void) | null>(null)
 
-  // 初期マーカー（3つ配置済み）
-  const [markers, setMarkers] = useState<Marker[]>([
-    { id: 1, photoId: 1, x: 450, y: 380 },
-    { id: 2, photoId: 2, x: 620, y: 320 },
-    { id: 3, photoId: 4, x: 550, y: 250 },
-  ])
+  useEffect(() => {
+    const updateTargetPosition = () => {
+      if (!mapRef.current) return
+      const rect = mapRef.current.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) return
 
-  // 初期矢印（1つ配置済み）
-  const [arrows, setArrows] = useState<Arrow[]>([
-    { id: 1, photoId: 1, x: 450, y: 380, angle: -45, length: 100 },
-  ])
+      const scale = Math.min(rect.width / MAP_IMAGE_WIDTH, rect.height / MAP_IMAGE_HEIGHT)
+      const renderedWidth = MAP_IMAGE_WIDTH * scale
+      const renderedHeight = MAP_IMAGE_HEIGHT * scale
+      const offsetX = (rect.width - renderedWidth) / 2
+      const offsetY = (rect.height - renderedHeight) / 2
+
+      setTargetPosition({
+        x: offsetX + TARGET_IMAGE_COORD.x * scale,
+        y: offsetY + TARGET_IMAGE_COORD.y * scale,
+      })
+    }
+
+    updateTargetPosition()
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(updateTargetPosition) : null
+    if (resizeObserver && mapRef.current) {
+      resizeObserver.observe(mapRef.current)
+    }
+
+    window.addEventListener('resize', updateTargetPosition)
+
+    return () => {
+      window.removeEventListener('resize', updateTargetPosition)
+      resizeObserver?.disconnect()
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (pointerMoveListenerRef.current) {
+        window.removeEventListener('pointermove', pointerMoveListenerRef.current)
+      }
+      if (pointerUpListenerRef.current) {
+        window.removeEventListener('pointerup', pointerUpListenerRef.current)
+        window.removeEventListener('pointercancel', pointerUpListenerRef.current)
+      }
+    }
+  }, [])
+
+  // 初期マーカー（3つのみ配置 - デモ用）
+  const initialMarkers: Marker[] = [
+    { id: 1, photoId: 1, x: 520, y: 500 }, // 写真1: 南側
+    { id: 2, photoId: 2, x: 680, y: 280 }, // 写真2: 北東側
+    { id: 3, photoId: 4, x: 720, y: 380 }, // 写真4: 東側
+  ]
+
+  const [markers, setMarkers] = useState<Marker[]>(initialMarkers)
+  const [arrows, setArrows] = useState<Arrow[]>([])
+
+  const calculateAngleToTarget = (markerX: number, markerY: number): number => {
+    // すべての矢印を同じ角度にする（UNIFIED_ARROW_ANGLE）
+    return UNIFIED_ARROW_ANGLE
+  }
+
+  const calculateArrowLength = (markerX: number, markerY: number): number => {
+    // すべての矢印を同じ長さにする
+    return 80
+  }
 
   const [draggedPhoto, setDraggedPhoto] = useState<number | null>(null)
   const [isDraggingOver, setIsDraggingOver] = useState(false)
   const [zoom, setZoom] = useState(100)
+  const [clickedPosition, setClickedPosition] = useState<{ x: number; y: number } | null>(null)
 
   const handleDragStart = (photoId: number) => {
     // 既に配置されている写真はドラッグ不可
@@ -697,26 +837,42 @@ export default function EnhancedMapEditor() {
       const y = e.clientY - rect.top
 
       if (mode === 'marker') {
-        setMarkers([...markers, {
+        setMarkers(prev => [...prev, {
           id: Date.now(),
           photoId: draggedPhoto,
           x,
           y,
-        }])
-      } else {
-        // 矢印モード：視線矢印を追加
-        const photo = photos.find(p => p.id === draggedPhoto)
-        const angle = photo ? photo.degrees - 90 : 0 // 方位を矢印の角度に変換
-        setArrows([...arrows, {
+      }])
+    } else {
+      // 矢印モード：視線矢印を追加
+      const angle = calculateAngleToTarget(x, y)
+      const length = calculateArrowLength(x, y)
+      setArrows(prev => {
+        const existingIndex = prev.findIndex(a => a.photoId === draggedPhoto)
+        if (existingIndex >= 0) {
+          const updated = [...prev]
+          const current = updated[existingIndex]
+          updated[existingIndex] = {
+            ...current,
+            x,
+            y,
+            angle,
+            length,
+          }
+          return updated
+        }
+
+        return [...prev, {
           id: Date.now(),
           photoId: draggedPhoto,
           x,
           y,
           angle,
-          length: 120,
-        }])
-      }
+          length,
+        }]
+      })
     }
+  }
 
     setDraggedPhoto(null)
   }
@@ -730,12 +886,167 @@ export default function EnhancedMapEditor() {
     setIsDraggingOver(false)
   }
 
-  const handleRemoveMarker = (markerId: number) => {
-    setMarkers(markers.filter(m => m.id !== markerId))
+  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // ドラッグ中はクリックイベントを無視
+    if (draggedPhoto !== null || !mapRef.current) return
+
+    const rect = mapRef.current.getBoundingClientRect()
+    const containerX = e.clientX - rect.left
+    const containerY = e.clientY - rect.top
+
+    // 背景画像のスケールとオフセットを計算
+    const scale = Math.min(rect.width / MAP_IMAGE_WIDTH, rect.height / MAP_IMAGE_HEIGHT)
+    const renderedWidth = MAP_IMAGE_WIDTH * scale
+    const renderedHeight = MAP_IMAGE_HEIGHT * scale
+    const offsetX = (rect.width - renderedWidth) / 2
+    const offsetY = (rect.height - renderedHeight) / 2
+
+    // 画像上の座標に変換
+    const imageX = (containerX - offsetX) / scale
+    const imageY = (containerY - offsetY) / scale
+
+    setClickedPosition({ x: imageX, y: imageY })
   }
 
+  const updateArrowAngle = (arrowId: number, clientX: number, clientY: number) => {
+    const mapRect = mapViewRef.current?.getBoundingClientRect()
+    if (!mapRect) {
+      console.log('updateArrowAngle: mapRect is null')
+      return
+    }
+
+    const pointerX = clientX - mapRect.left
+    const pointerY = clientY - mapRect.top
+
+    setArrows(prev =>
+      prev.map(arrow => {
+        if (arrow.id !== arrowId) return arrow
+        const angle = Math.atan2(pointerY - arrow.y, pointerX - arrow.x) * (180 / Math.PI)
+        console.log(`updateArrowAngle: arrow ${arrowId}, angle=${angle.toFixed(1)}°`)
+        return { ...arrow, angle }
+      }),
+    )
+  }
+
+  const handleArrowPointerDown = (arrowId: number) => (event: React.PointerEvent<HTMLDivElement>) => {
+    console.log(`handleArrowPointerDown called for arrow ${arrowId}`)
+    if ((event.target as HTMLElement).closest('button')) {
+      console.log('Clicked on button, ignoring')
+      return
+    }
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (pointerMoveListenerRef.current) {
+      window.removeEventListener('pointermove', pointerMoveListenerRef.current)
+      pointerMoveListenerRef.current = null
+    }
+
+    if (pointerUpListenerRef.current) {
+      window.removeEventListener('pointerup', pointerUpListenerRef.current)
+      window.removeEventListener('pointercancel', pointerUpListenerRef.current)
+      pointerUpListenerRef.current = null
+    }
+
+    rotatingArrowIdRef.current = arrowId
+    setActiveArrowId(arrowId)
+    updateArrowAngle(arrowId, event.clientX, event.clientY)
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      if (rotatingArrowIdRef.current !== arrowId) return
+      moveEvent.preventDefault()
+      updateArrowAngle(arrowId, moveEvent.clientX, moveEvent.clientY)
+    }
+
+    const handlePointerUp = () => {
+      rotatingArrowIdRef.current = null
+      setActiveArrowId(null)
+
+      if (pointerMoveListenerRef.current) {
+        window.removeEventListener('pointermove', pointerMoveListenerRef.current)
+        pointerMoveListenerRef.current = null
+      }
+
+      if (pointerUpListenerRef.current) {
+        window.removeEventListener('pointerup', pointerUpListenerRef.current)
+        window.removeEventListener('pointercancel', pointerUpListenerRef.current)
+        pointerUpListenerRef.current = null
+      }
+    }
+
+    pointerMoveListenerRef.current = handlePointerMove
+    pointerUpListenerRef.current = handlePointerUp
+
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerUp)
+  }
+
+  const handleRemoveMarker = (markerId: number) => {
+    setMarkers(prevMarkers => {
+      const markerToRemove = prevMarkers.find(m => m.id === markerId)
+      if (!markerToRemove) return prevMarkers
+      setArrows(prevArrows => prevArrows.filter(a => a.photoId !== markerToRemove.photoId))
+      return prevMarkers.filter(m => m.id !== markerId)
+    })
+  }
+
+  useEffect(() => {
+    console.log('useEffect for arrows triggered, targetPosition:', targetPosition)
+    if (!targetPosition) {
+      console.log('targetPosition is null, skipping arrow initialization')
+      return
+    }
+
+    setArrows(prevArrows => {
+      console.log('Initializing arrows, prevArrows:', prevArrows)
+      const existingByPhoto = new Map<number, Arrow>()
+      prevArrows.forEach(arrow => {
+        if (!existingByPhoto.has(arrow.photoId)) {
+          existingByPhoto.set(arrow.photoId, arrow)
+        }
+      })
+
+      const recalculated = markers.map(marker => {
+        const previous = existingByPhoto.get(marker.photoId)
+        // 初期角度として常にUNIFIED_ARROW_ANGLEを使用（ユーザーがドラッグで変更した場合はその角度を保持）
+        const angle = previous?.angle ?? UNIFIED_ARROW_ANGLE
+        const length = previous?.length ?? 80
+        console.log(`Marker ${marker.photoId}: previous=${previous?.angle}, final=${angle}`)
+        return {
+          id: previous?.id ?? marker.id,
+          photoId: marker.photoId,
+          x: marker.x,
+          y: marker.y,
+          angle,
+          length,
+        }
+      })
+
+      if (recalculated.length === prevArrows.length) {
+        const unchanged = recalculated.every(next => {
+          const prev = prevArrows.find(a => a.photoId === next.photoId)
+          if (!prev) return false
+          return (
+            Math.abs(prev.x - next.x) < 0.001 &&
+            Math.abs(prev.y - next.y) < 0.001 &&
+            Math.abs(prev.angle - next.angle) < 0.001 &&
+            Math.abs(prev.length - next.length) < 0.001
+          )
+        })
+
+        if (unchanged) {
+          return prevArrows
+        }
+      }
+
+      return recalculated
+    })
+  }, [markers, targetPosition])
+
   const handleRemoveArrow = (arrowId: number) => {
-    setArrows(arrows.filter(a => a.id !== arrowId))
+    setArrows(prev => prev.filter(a => a.id !== arrowId))
   }
 
   const handleSave = () => {
@@ -780,7 +1091,7 @@ export default function EnhancedMapEditor() {
           </ProjectInfo>
 
           <Title>写真一覧</Title>
-          <Subtitle>地図または視線矢印をドラッグ</Subtitle>
+          <Subtitle>写真は地図へドラッグ、矢印はドラッグして自由に回転できます</Subtitle>
         </SidebarHeader>
 
         <PhotoList>
@@ -877,13 +1188,21 @@ export default function EnhancedMapEditor() {
         </MapToolbar>
 
         <MapView
+          ref={mapViewRef}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <MapImage>
+          <MapImage ref={mapRef} onClick={handleMapClick}>
             <MapOverlay>
-              {/* 実際の図面を表示中 */}
+              {targetPosition && (
+                <>
+                  <TargetMarker $x={targetPosition.x} $y={targetPosition.y} />
+                  <TargetLabel $x={targetPosition.x} $y={targetPosition.y}>
+                    株式会社グラフデポ
+                  </TargetLabel>
+                </>
+              )}
             </MapOverlay>
 
             <div style={{
@@ -898,12 +1217,33 @@ export default function EnhancedMapEditor() {
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
             }}>
               <div style={{ fontWeight: 600, marginBottom: '4px', color: '#212121' }}>
-                広域図（PDFより抽出）
+                詳細図（拡大表示）
               </div>
               <div>
                 兵庫県相生市山手2丁目73付近
               </div>
+              <div style={{ marginTop: '8px', fontSize: '0.7rem', color: '#005BAC', fontWeight: 600 }}>
+                ● 対象物件の位置を中心に表示
+              </div>
             </div>
+
+            {clickedPosition && (
+              <div style={{
+                position: 'absolute',
+                top: '20px',
+                left: '20px',
+                background: 'rgba(0, 91, 172, 0.95)',
+                color: 'white',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                fontFamily: 'monospace',
+              }}>
+                クリック位置: X={Math.round(clickedPosition.x)}, Y={Math.round(clickedPosition.y)}
+              </div>
+            )}
           </MapImage>
 
           <AnimatePresence>
@@ -959,8 +1299,12 @@ export default function EnhancedMapEditor() {
 
           {arrows.map((arrow) => {
             const photo = photos.find(p => p.id === arrow.photoId)
-            if (!photo) return null
+            if (!photo) {
+              console.log(`Arrow ${arrow.id} has no matching photo`)
+              return null
+            }
 
+            console.log(`Rendering arrow ${arrow.id} at (${arrow.x}, ${arrow.y}) with angle ${arrow.angle}°`)
             return (
               <ViewArrow
                 key={arrow.id}
@@ -968,12 +1312,14 @@ export default function EnhancedMapEditor() {
                 $y={arrow.y}
                 $angle={arrow.angle}
                 $length={arrow.length}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
+                $isActive={activeArrowId === arrow.id}
+                initial={{ scale: 0, opacity: 0, rotate: arrow.angle }}
+                animate={{ scale: 1, opacity: 1, rotate: arrow.angle }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                drag
-                dragMomentum={false}
+                onPointerDown={handleArrowPointerDown(arrow.id)}
+                style={{ transformOrigin: '0 50%' }}
               >
+                <ArrowStartMarker />
                 <ArrowActions>
                   <ArrowActionButton onClick={() => handleRemoveArrow(arrow.id)}>
                     <Trash2 size={14} />

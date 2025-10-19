@@ -1,7 +1,8 @@
+import { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Smartphone, Monitor, Rocket, TrendingUp, Building2 } from 'lucide-react'
+import { Smartphone, Monitor, Rocket, TrendingUp, Building2, ArrowRight } from 'lucide-react'
 
 const Container = styled.div`
   min-height: 100vh;
@@ -90,7 +91,56 @@ const Badge = styled.span<{ $color: string }>`
   font-weight: 600;
 `
 
+const ArrowLink = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: ${props => props.theme.colors.primary.main};
+  text-decoration: none;
+  transition: all ${props => props.theme.transitions.fast};
+
+  &:hover {
+    gap: 1rem;
+    text-decoration: underline;
+  }
+`
+
 export default function HomePage() {
+  const [rotation, setRotation] = useState(0);
+  const startRef = useRef<HTMLDivElement>(null);
+  const endRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const calculateAngle = () => {
+      if (startRef.current && endRef.current) {
+        const startRect = startRef.current.getBoundingClientRect();
+        const endRect = endRef.current.getBoundingClientRect();
+
+        const startCenterX = startRect.left + startRect.width / 2;
+        const startCenterY = startRect.top + startRect.height / 2;
+        const endCenterX = endRect.left + endRect.width / 2;
+        const endCenterY = endRect.top + endRect.height / 2;
+
+        const angleRad = Math.atan2(endCenterY - startCenterY, endCenterX - startCenterX);
+        const angleDeg = angleRad * (180 / Math.PI);
+
+        setRotation(angleDeg);
+      }
+    };
+
+    // The animation duration is 0.5s. Let's calculate after that.
+    const timer = setTimeout(calculateAngle, 600);
+    window.addEventListener('resize', calculateAngle);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', calculateAngle);
+    };
+  }, []);
+
   return (
     <Container>
       <Card
@@ -117,7 +167,7 @@ export default function HomePage() {
           </NavCard>
 
           <NavCard to="/web/phase1">
-            <IconWrapper $color="#005BAC">
+            <IconWrapper $color="#005BAC" ref={startRef}>
               <Monitor size={32} />
             </IconWrapper>
             <CardTitle>Web管理画面</CardTitle>
@@ -153,7 +203,12 @@ export default function HomePage() {
           </NavCard>
         </Grid>
 
-        <div style={{ textAlign: 'center', color: '#757575', fontSize: '0.875rem' }}>
+        <ArrowLink href="http://localhost:3000/web/phase1" target="_blank" rel="noopener noreferrer" ref={endRef}>
+          <span>調査対象地</span>
+          <ArrowRight size={20} style={{ transform: `rotate(${rotation}deg)` }} />
+        </ArrowLink>
+
+        <div style={{ textAlign: 'center', color: '#757575', fontSize: '0.875rem', marginTop: '2rem' }}>
           <p>各カードをクリックして、モックアプリケーションを体験できます</p>
         </div>
       </Card>

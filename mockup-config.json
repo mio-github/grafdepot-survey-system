@@ -1,0 +1,215 @@
+{
+  "projectName": "グラフデポ 現地調査報告システム",
+  "subtitle": "React + TypeScript + Vite モックアプリケーション",
+  "client": "株式会社グラフデポ様",
+  "vendor": "開発チーム",
+  "baseUrl": "http://localhost:3000",
+  "outputDir": "./mockup-output",
+  "screenshotsDir": "./mockup-output/screenshots",
+  "annotatedDir": "./mockup-output/screenshots-annotated",
+  "pdfFileName": "画面一覧.pdf",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "pages": [
+    {
+      "path": "/",
+      "name": "01_ホーム画面",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase1",
+      "name": "02_モバイルPhase1_ホーム",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase1/camera",
+      "name": "03_モバイルPhase1_カメラ",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase1/photos",
+      "name": "04_モバイルPhase1_撮影リスト",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase1/editor",
+      "name": "05_モバイルPhase1_報告書編集",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase2",
+      "name": "06_モバイルPhase2_ホーム",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase2/camera",
+      "name": "07_モバイルPhase2_AR撮影",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase2/editor",
+      "name": "08_モバイルPhase2_報告書編集",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/mobile/phase2/checklist",
+      "name": "09_モバイルPhase2_チェックリスト",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/web/phase1",
+      "name": "10_WebPhase1_報告書編集",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/web/phase2",
+      "name": "11_WebPhase2_ホーム",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/web/phase2/editor",
+      "name": "12_WebPhase2_報告書編集",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/web/phase2/approval",
+      "name": "13_WebPhase2_承認フロー",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/web/phase2/users",
+      "name": "14_WebPhase2_ユーザー管理",
+      "waitStrategy": "basic"
+    },
+    {
+      "path": "/web/phase2/permissions",
+      "name": "15_WebPhase2_権限管理",
+      "waitStrategy": "basic"
+    }
+  ],
+  "annotations": {},
+  "screens": [
+    {
+      "filename": "01_ホーム画面",
+      "title": "ホーム画面",
+      "category": "共通",
+      "description": "システムのメイン画面。モバイルアプリ（Phase1/Phase2）とWeb管理画面（Phase1/Phase2）へのナビゲーションカードを表示。各フェーズの特徴と機能一覧を確認できる。"
+    },
+    {
+      "filename": "02_モバイルPhase1_ホーム",
+      "title": "モバイルPhase1 - ホーム",
+      "category": "モバイル - Phase1（単身利用）",
+      "description": "Phase1（単身利用）のモバイルアプリホーム画面。写真撮影、撮影リスト、報告書編集の3つの主要機能へのアクセスが可能。GPS連動・方位情報付き写真撮影機能を搭載。"
+    },
+    {
+      "filename": "03_モバイルPhase1_カメラ",
+      "title": "モバイルPhase1 - カメラ画面",
+      "category": "モバイル - Phase1（単身利用）",
+      "description": "GPS情報・方位情報を自動記録するカメラ画面。撮影時にGPS座標（緯度・経度）と方位角度を自動取得し、写真に紐付けて保存する。十字線とビューファインダーで構図確認が可能。"
+    },
+    {
+      "filename": "04_モバイルPhase1_撮影リスト",
+      "title": "モバイルPhase1 - 撮影リスト",
+      "category": "モバイル - Phase1（単身利用）",
+      "description": "撮影した写真の一覧表示画面。各写真にGPS座標、方位、撮影日時が表示される。サムネイル形式で写真を確認でき、タップで詳細表示が可能。"
+    },
+    {
+      "filename": "05_モバイルPhase1_報告書編集",
+      "title": "モバイルPhase1 - 報告書編集",
+      "category": "モバイル - Phase1（単身利用）",
+      "description": "撮影した写真を使って報告書を作成・編集する画面。写真の選択、コメント追加、報告書のタイトル・内容編集が可能。シンプルなテキストエディタでモバイル端末から簡単に報告書を作成できる。"
+    },
+    {
+      "filename": "06_モバイルPhase2_ホーム",
+      "title": "モバイルPhase2 - ホーム",
+      "category": "モバイル - Phase2（チーム利用）",
+      "description": "Phase2（チーム利用）のモバイルアプリホーム画面。Phase1の全機能に加えて、AR撮影ガイド、リアルタイム共同編集、共有チェックリストなどのチーム機能を搭載。各機能にPhaseバッジが付与され、Phase1/Phase1+/Phase2の区別が明確。"
+    },
+    {
+      "filename": "07_モバイルPhase2_AR撮影",
+      "title": "モバイルPhase2 - AR撮影画面",
+      "category": "モバイル - Phase2（チーム利用）",
+      "description": "AR機能を搭載したカメラ画面。過去にチームメンバーが撮影した写真の位置をARマーカーで画面上に表示。撮影時刻とラベル情報も確認でき、同じ地点から異なる角度・時間帯での撮影を効率化。AR ON/OFFの切り替えが可能。"
+    },
+    {
+      "filename": "08_モバイルPhase2_報告書編集",
+      "title": "モバイルPhase2 - 報告書編集",
+      "category": "モバイル - Phase2（チーム利用）",
+      "description": "チームでの共同編集に対応した報告書編集画面。リアルタイムで他のメンバーの編集状況を確認しながら作業が可能。Phase1の機能に加えて、コメント機能やバージョン管理機能を搭載。"
+    },
+    {
+      "filename": "09_モバイルPhase2_チェックリスト",
+      "title": "モバイルPhase2 - 共有チェックリスト",
+      "category": "モバイル - Phase2（チーム利用）",
+      "description": "チーム全体で進捗を管理する共有チェックリスト画面。調査項目ごとのステータス（未完了/進行中/完了）を管理し、担当者や期限を設定可能。チームメンバー全員がリアルタイムで進捗状況を把握できる。"
+    },
+    {
+      "filename": "10_WebPhase1_報告書編集",
+      "title": "WebPhase1 - 報告書編集",
+      "category": "Web - Phase1（単身利用）",
+      "description": "デスクトップ向けの報告書編集画面。広域図上に撮影した写真をGPS座標に基づいて自動配置。視線矢印の配置、写真の拡大縮小・回転、テキスト編集が可能。完成した報告書はPDF形式でエクスポート可能。"
+    },
+    {
+      "filename": "11_WebPhase2_ホーム",
+      "title": "WebPhase2 - ホーム",
+      "category": "Web - Phase2（チーム利用）",
+      "description": "Phase2 Web管理画面のホーム。報告書編集（AI自動生成機能付き）、承認フロー管理、ユーザー管理、権限管理の4つのメイン機能へのアクセスカードを表示。各カードには機能の説明と主要な特徴がリスト表示される。"
+    },
+    {
+      "filename": "12_WebPhase2_報告書編集",
+      "title": "WebPhase2 - 報告書編集（AI機能付き）",
+      "category": "Web - Phase2（チーム利用）",
+      "description": "AI自動生成機能を搭載した報告書編集画面。写真をアップロードするとAIが画像解析を行い、建物状態の自動判定、環境の自動分析、専門的な文章生成を実行。作業時間を約80%削減。Phase1の全機能に加えて、ツールバーにAI自動生成ボタンを配置。"
+    },
+    {
+      "filename": "13_WebPhase2_承認フロー",
+      "title": "WebPhase2 - 承認フロー管理",
+      "category": "Web - Phase2（チーム利用）",
+      "description": "報告書の承認プロセスを管理する画面。多段階承認フロー、コメント・差し戻し機能、ステータス管理（承認待ち/承認済み/差し戻し）を実装。各報告書の承認状況を一覧表示し、承認者は内容を確認して承認/差し戻しの判断が可能。"
+    },
+    {
+      "filename": "14_WebPhase2_ユーザー管理",
+      "title": "WebPhase2 - ユーザー管理",
+      "category": "Web - Phase2（チーム利用）",
+      "description": "チームメンバーの管理画面。ユーザーの追加・編集・削除、ロール割り当て（管理者/マネージャー/編集者/閲覧者）、作成報告書数の確認が可能。リスト形式で各ユーザーの名前、メールアドレス、電話番号、ロールバッジ、報告書数を一覧表示。統計情報として総ユーザー数とロール別集計を表示。"
+    },
+    {
+      "filename": "15_WebPhase2_権限管理",
+      "title": "WebPhase2 - 権限管理",
+      "category": "Web - Phase2（チーム利用）",
+      "description": "ロールごとの詳細な権限設定を管理する画面。4つのロール（管理者/マネージャー/編集者/閲覧者）それぞれに対して、8つの権限項目（報告書作成/編集/削除、報告書承認、ユーザー管理、権限管理、AI機能利用、エクスポート）の許可/不許可を視覚的に表示。権限マトリクスで各ロールの権限範囲を一目で把握可能。"
+    }
+  ],
+  "pdfOptions": {
+    "format": "A4",
+    "landscape": true,
+    "printBackground": true
+  },
+  "overview": {
+    "enabled": true,
+    "sections": [
+      {
+        "title": "システム概要",
+        "content": "グラフデポ様向けの現地調査報告書作成システムのモックアプリケーションです。React 18 + TypeScript + Viteを使用して開発されており、フラット・モダンなデザインを採用しています。"
+      },
+      {
+        "title": "フェーズ1: 単身利用",
+        "content": "個人での利用を想定したシンプル版。スマホアプリではGPS・方位情報付き写真撮影、撮影リスト表示、報告書編集が可能。Web管理画面では地図上への写真配置、視線矢印配置、PDF出力機能を提供します。"
+      },
+      {
+        "title": "フェーズ2: チーム利用",
+        "content": "チームでの協働作業を想定した本稼働版。フェーズ1の全機能に加えて、AR撮影ガイド（過去の撮影位置表示）、リアルタイム共同編集、共有チェックリスト、承認フロー管理、ユーザー管理、権限管理機能を搭載。さらにAI画像解析による報告書自動生成機能で作業時間を約80%削減します。"
+      },
+      {
+        "title": "技術スタック",
+        "content": "React 18, TypeScript, Vite, Styled Components, Framer Motion, Lucide React Icons, React Router DOM"
+      },
+      {
+        "title": "デザイン特徴",
+        "content": "フラット・モダンデザイン、レスポンシブ対応、インタラクティブなアニメーション、直感的なUI/UX"
+      }
+    ]
+  }
+}

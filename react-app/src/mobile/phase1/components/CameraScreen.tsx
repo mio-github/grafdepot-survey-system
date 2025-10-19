@@ -165,35 +165,57 @@ const CaptureFlash = styled(motion.div)`
 
 const MiniMap = styled(motion.div)`
   position: absolute;
-  bottom: 180px;
+  bottom: 130px;
   right: 16px;
-  width: 100px;
-  height: 100px;
+  width: 140px;
+  height: 140px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 `
 
 const MapView = styled.div`
   width: 100%;
   height: 100%;
-  background: #E8F5E9;
+  background: #F5F5F5;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* 地図のグリッド線を表現 */
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
 `
 
 const MapMarker = styled(motion.div)`
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   background: #005BAC;
   border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 2;
+`
+
+const MapDirectionIndicator = styled(motion.div)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 16px solid #FFC400;
+  transform-origin: 50% 70%;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  z-index: 1;
 `
 
 const SuccessMessage = styled(motion.div)`
@@ -329,6 +351,16 @@ export default function CameraScreen() {
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         <MapView>
+          {/* 撮影方向を示す矢印 */}
+          <MapDirectionIndicator
+            animate={{
+              rotate: compass.degrees - 180, // コンパス方向に合わせて回転
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+          />
+          {/* 現在位置マーカー */}
           <MapMarker
             animate={{
               scale: [1, 1.2, 1],
