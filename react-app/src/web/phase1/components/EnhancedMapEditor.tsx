@@ -171,10 +171,12 @@ const PhotoNumber = styled.div`
   flex-shrink: 0;
 `
 
-const PhotoThumb = styled.div`
+const PhotoThumb = styled.div<{ $imageUrl?: string }>`
   width: 60px;
   height: 60px;
-  background: #E0E0E0;
+  background: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : '#E0E0E0'};
+  background-size: cover;
+  background-position: center;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -494,18 +496,43 @@ const MapMarker = styled(motion.div)<{ $x: number; $y: number }>`
   z-index: 10;
 `
 
-const MarkerPin = styled.div<{ $number: number }>`
-  width: 44px;
-  height: 44px;
-  background: ${props => props.theme.colors.primary.main};
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
+const MarkerPin = styled.div<{ $number: number; $imageUrl?: string; $isOpen?: boolean }>`
+  width: ${props => props.$isOpen && props.$imageUrl ? '120px' : '44px'};
+  height: ${props => props.$isOpen && props.$imageUrl ? '120px' : '44px'};
+  background: ${props => props.$isOpen && props.$imageUrl ? `url(${props.$imageUrl})` : props.theme.colors.primary.main};
+  background-size: cover;
+  background-position: center;
+  border-radius: ${props => props.$isOpen && props.$imageUrl ? '12px' : '50% 50% 50% 0'};
+  transform: ${props => props.$isOpen && props.$imageUrl ? 'rotate(0deg)' : 'rotate(-45deg)'};
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   border: 3px solid white;
   position: relative;
+  transition: all 0.3s ease;
+  z-index: ${props => props.$isOpen ? '100' : 'auto'};
+
+  /* ホバー時に写真を表示 */
+  &:hover {
+    width: ${props => props.$imageUrl ? '120px' : '44px'};
+    height: ${props => props.$imageUrl ? '120px' : '44px'};
+    border-radius: ${props => props.$imageUrl ? '12px' : '50% 50% 50% 0'};
+    transform: ${props => props.$imageUrl ? 'rotate(0deg)' : 'rotate(-45deg)'};
+    background: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : props.theme.colors.primary.main};
+    background-size: cover;
+    background-position: center;
+    z-index: 100;
+  }
+
+  /* ホバー時の写真オーバーレイ */
+  &:hover::before {
+    content: ${props => props.$imageUrl ? "''" : 'none'};
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+  }
 `
 
 const MarkerNumber = styled.div`
@@ -513,6 +540,20 @@ const MarkerNumber = styled.div`
   color: white;
   font-weight: 700;
   font-size: 1rem;
+  z-index: 1;
+  transition: all 0.3s ease;
+
+  ${MarkerPin}:hover & {
+    background: rgba(0, 91, 172, 0.95);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
 `
 
 const MarkerLabel = styled.div`
@@ -696,6 +737,55 @@ const StatLabel = styled.div`
   margin-top: 4px;
 `
 
+const NorthIndicator = styled.div`
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+  border: 2px solid #E0E0E0;
+`
+
+const NorthArrowWeb = styled.div`
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid #FF3B30;
+  position: relative;
+
+  &::after {
+    content: 'N';
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #212121;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 14px solid #BDBDBD;
+  }
+`
+
 interface Photo {
   id: number
   number: number
@@ -704,6 +794,7 @@ interface Photo {
   degrees: number
   gps: string
   description: string
+  imageUrl?: string
 }
 
 interface Marker {
@@ -724,12 +815,12 @@ interface Arrow {
 
 // 実際のサンプルデータから作成
 const samplePhotos: Photo[] = [
-  { id: 1, number: 1, name: '前面道路(南東側)', direction: 'SE', degrees: 135, gps: '35.681236°N, 139.767125°E', description: '前面道路(南東側)を撮影' },
-  { id: 2, number: 2, name: '調査物件_正面', direction: 'E', degrees: 90, gps: '35.681240°N, 139.767130°E', description: '調査物件を撮影' },
-  { id: 3, number: 3, name: '境界付近(南西側)', direction: 'SW', degrees: 225, gps: '35.681230°N, 139.767115°E', description: '境界付近(南西側)を撮影' },
-  { id: 4, number: 4, name: '調査物件_側面', direction: 'N', degrees: 0, gps: '35.681245°N, 139.767120°E', description: '調査物件を撮影' },
-  { id: 5, number: 5, name: '境界付近(北東側)', direction: 'NE', degrees: 45, gps: '35.681250°N, 139.767135°E', description: '境界付近(北東側)を撮影' },
-  { id: 6, number: 6, name: '調査物件_全景', direction: 'W', degrees: 270, gps: '35.681235°N, 139.767110°E', description: '調査物件を撮影' },
+  { id: 1, number: 1, name: '前面道路(南東側)', direction: 'SE', degrees: 135, gps: '35.681236°N, 139.767125°E', description: '前面道路(南東側)を撮影', imageUrl: '/assets/photos/building-front.png' },
+  { id: 2, number: 2, name: '調査物件_正面', direction: 'E', degrees: 90, gps: '35.681240°N, 139.767130°E', description: '調査物件を撮影', imageUrl: '/assets/photos/building-side.png' },
+  { id: 3, number: 3, name: '境界付近(南西側)', direction: 'SW', degrees: 225, gps: '35.681230°N, 139.767115°E', description: '境界付近(南西側)を撮影', imageUrl: '/assets/photos/building-detail.png' },
+  { id: 4, number: 4, name: '調査物件_側面', direction: 'N', degrees: 0, gps: '35.681245°N, 139.767120°E', description: '調査物件を撮影', imageUrl: '/assets/photos/building-front.png' },
+  { id: 5, number: 5, name: '境界付近(北東側)', direction: 'NE', degrees: 45, gps: '35.681250°N, 139.767135°E', description: '境界付近(北東側)を撮影', imageUrl: '/assets/photos/building-side.png' },
+  { id: 6, number: 6, name: '調査物件_全景', direction: 'W', degrees: 270, gps: '35.681235°N, 139.767110°E', description: '調査物件を撮影', imageUrl: '/assets/photos/building-detail.png' },
 ]
 
 export default function EnhancedMapEditor() {
@@ -1123,8 +1214,8 @@ export default function EnhancedMapEditor() {
               >
                 <PhotoItemHeader>
                   <PhotoNumber>{photo.number}</PhotoNumber>
-                  <PhotoThumb>
-                    <ImageIcon size={24} />
+                  <PhotoThumb $imageUrl={photo.imageUrl}>
+                    {!photo.imageUrl && <ImageIcon size={24} />}
                   </PhotoThumb>
                   <PhotoInfo>
                     <PhotoName>{photo.name}</PhotoName>
@@ -1207,6 +1298,11 @@ export default function EnhancedMapEditor() {
           onDragLeave={handleDragLeave}
         >
           <MapImage ref={mapRef} onClick={handleMapClick}>
+            {/* 方位表示 */}
+            <NorthIndicator>
+              <NorthArrowWeb />
+            </NorthIndicator>
+
             <MapOverlay>
               {targetPosition && (
                 <>
@@ -1293,7 +1389,7 @@ export default function EnhancedMapEditor() {
                 dragMomentum={false}
                 onDrag={(event, info) => handleMarkerDrag(marker.id, event, info)}
               >
-                <MarkerPin $number={photo.number}>
+                <MarkerPin $number={photo.number} $imageUrl={photo.imageUrl} $isOpen={photo.number === 1}>
                   <MarkerActions>
                     <MarkerActionButton onClick={() => alert(`写真 ${photo.number}: ${photo.name}`)}>
                       <Eye size={14} />

@@ -165,10 +165,12 @@ const PhotoNumber = styled.div`
   flex-shrink: 0;
 `
 
-const PhotoThumb = styled.div`
+const PhotoThumb = styled.div<{ $imageUrl?: string }>`
   width: 80px;
   height: 80px;
-  background: #E0E0E0;
+  background: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : '#E0E0E0'};
+  background-size: cover;
+  background-position: center;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -304,6 +306,7 @@ interface Photo {
   degrees: number
   gps: string
   timestamp: string
+  imageUrl?: string
 }
 
 const samplePhotos: Photo[] = [
@@ -315,6 +318,7 @@ const samplePhotos: Photo[] = [
     degrees: 135,
     gps: '35.681236°N, 139.767125°E',
     timestamp: '2024-06-07 10:23',
+    imageUrl: '/assets/photos/building-front.png',
   },
   {
     id: 2,
@@ -432,8 +436,8 @@ export default function PhotoListScreen() {
               transition={{ delay: index * 0.1 }}
             >
               <PhotoNumber>{photo.number}</PhotoNumber>
-              <PhotoThumb>
-                <Camera size={32} />
+              <PhotoThumb $imageUrl={photo.imageUrl}>
+                {!photo.imageUrl && <Camera size={32} />}
               </PhotoThumb>
               <PhotoInfo>
                 <PhotoName>{photo.name}</PhotoName>
