@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom'
 
 const MAP_IMAGE_WIDTH = 1768
 const MAP_IMAGE_HEIGHT = 1166
-const TARGET_IMAGE_COORD = { x: 720, y: 750 } // 調査対象地の座標（画像ピクセル基準）
+const TARGET_IMAGE_COORD = { x: 727, y: 755 } // 調査対象地の座標（画像ピクセル基準）
 const ARROW_TIP_OFFSET = 32 // 矢印の先端オフセット（調査対象地の手前で矢印を止める）
 
 const Container = styled.div`
@@ -760,6 +760,16 @@ export default function EnhancedMapEditor() {
         x: offsetX + TARGET_IMAGE_COORD.x * scale,
         y: offsetY + TARGET_IMAGE_COORD.y * scale,
       })
+
+      // 初期マーカーをビューポート座標に変換（初回のみ）
+      setMarkers(prev => {
+        if (prev.length > 0) return prev
+        return initialMarkersImageCoords.map(marker => ({
+          ...marker,
+          x: offsetX + marker.x * scale,
+          y: offsetY + marker.y * scale,
+        }))
+      })
     }
 
     updateTargetPosition()
@@ -790,30 +800,29 @@ export default function EnhancedMapEditor() {
     }
   }, [])
 
-  // 初期マーカー（3つのみ配置 - デモ用）
-  const initialMarkers: Marker[] = [
-    { id: 1, photoId: 1, x: 520, y: 500 }, // 写真1: 南側
-    { id: 2, photoId: 2, x: 680, y: 280 }, // 写真2: 北東側
-    { id: 3, photoId: 4, x: 720, y: 380 }, // 写真4: 東側
+  // 初期マーカー（画像座標系で定義）
+  const initialMarkersImageCoords = [
+    { id: 1, photoId: 1, x: 530, y: 900 },  // 写真1: 前面道路(南東側) - ターゲットの南側
+    { id: 2, photoId: 2, x: 900, y: 430 },  // 写真2: 調査物件_正面 - ターゲットの北東側
+    { id: 4, photoId: 4, x: 900, y: 570 },  // 写真4: 調査物件_側面 - ターゲットの東側
   ]
 
-  const [markers, setMarkers] = useState<Marker[]>(initialMarkers)
+  const [markers, setMarkers] = useState<Marker[]>([])
   const [arrows, setArrows] = useState<Arrow[]>([])
 
-  const calculateAngleToTarget = (markerX: number, markerY: number): number => {
-    // マーカーから調査対象地への角度を計算
-    const dx = TARGET_IMAGE_COORD.x - markerX
-    const dy = TARGET_IMAGE_COORD.y - markerY
-    return Math.atan2(dy, dx) * (180 / Math.PI)
+  const calculateAngleToTarget = (markerX: number, markerY: number, targetPos: { x: number; y: number } | null): number => {
+    // マーカーから調査対象地への角度を計算（ビューポート座標系で計算）
+    if (!targetPos) return 0
+    const dx = targetPos.x - markerX
+    const dy = targetPos.y - markerY
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI)
+    console.log(`Marker (${markerX}, ${markerY}) -> Target (${targetPos.x}, ${targetPos.y}): dx=${dx}, dy=${dy}, angle=${angle.toFixed(1)}°`)
+    return angle
   }
 
   const calculateArrowLength = (markerX: number, markerY: number): number => {
-    // マーカーから調査対象地までの距離を計算
-    const dx = TARGET_IMAGE_COORD.x - markerX
-    const dy = TARGET_IMAGE_COORD.y - markerY
-    const distance = Math.sqrt(dx * dx + dy * dy)
-    // 矢印の先端のオフセット分を引く（調査対象地の手前で止める）
-    return Math.max(distance - ARROW_TIP_OFFSET, 32)
+    // 矢印の長さを短く固定（方向だけを示す）
+    return 60
   }
 
   const [draggedPhoto, setDraggedPhoto] = useState<number | null>(null)
@@ -850,7 +859,7 @@ export default function EnhancedMapEditor() {
       }])
     } else {
       // 矢印モード：視線矢印を追加
-      const angle = calculateAngleToTarget(x, y)
+      const angle = calculateAngleToTarget(x, y, targetPosition)
       const length = calculateArrowLength(x, y)
       setArrows(prev => {
         const existingIndex = prev.findIndex(a => a.photoId === draggedPhoto)
@@ -980,6 +989,19 @@ export default function EnhancedMapEditor() {
     window.addEventListener('pointercancel', handlePointerUp)
   }
 
+  const handleMarkerDrag = (markerId: number, event: any, info: any) => {
+    setMarkers(prevMarkers =>
+      prevMarkers.map(marker => {
+        if (marker.id !== markerId) return marker
+        return {
+          ...marker,
+          x: marker.x + info.delta.x,
+          y: marker.y + info.delta.y,
+        }
+      }),
+    )
+  }
+
   const handleRemoveMarker = (markerId: number) => {
     setMarkers(prevMarkers => {
       const markerToRemove = prevMarkers.find(m => m.id === markerId)
@@ -1003,7 +1025,7 @@ export default function EnhancedMapEditor() {
       const recalculated = markers.map(marker => {
         const previous = existingByPhoto.get(marker.photoId)
         // 初期角度は調査対象地を向く角度を計算（ユーザーがドラッグで変更した場合はその角度を保持）
-        const angle = previous?.angle ?? calculateAngleToTarget(marker.x, marker.y)
+        const angle = previous?.angle ?? calculateAngleToTarget(marker.x, marker.y, targetPosition)
         const length = previous?.length ?? calculateArrowLength(marker.x, marker.y)
         return {
           id: previous?.id ?? marker.id,
@@ -1269,6 +1291,7 @@ export default function EnhancedMapEditor() {
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 drag
                 dragMomentum={false}
+                onDrag={(event, info) => handleMarkerDrag(marker.id, event, info)}
               >
                 <MarkerPin $number={photo.number}>
                   <MarkerActions>
@@ -1307,6 +1330,21 @@ export default function EnhancedMapEditor() {
                 style={{ transformOrigin: '0 50%' }}
               >
                 <ArrowStartMarker />
+                {/* デバッグ用：角度を表示 */}
+                <div style={{
+                  position: 'absolute',
+                  top: '-30px',
+                  left: '0',
+                  background: 'rgba(0, 0, 0, 0.7)',
+                  color: 'white',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  whiteSpace: 'nowrap',
+                  pointerEvents: 'none',
+                }}>
+                  {arrow.angle.toFixed(1)}°
+                </div>
                 <ArrowActions>
                   <ArrowActionButton onClick={() => handleRemoveArrow(arrow.id)}>
                     <Trash2 size={14} />
